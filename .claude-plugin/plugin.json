@@ -1,11 +1,11 @@
 {
-  "name": "agent-skills",
-  "description": "66 agent skills across eight families: deterministic guards, interop, security, backend/deploy, domains, engineering process, power tools, and creative/frontend workflows, including audited Proxmox VE MCP administration.",
-  "version": "2.9.0",
+  "name": "core-skills",
+  "description": "83 core skills by trac3r00 for any SKILL.md-reading AI client, across eleven families: deterministic guards, interop, security, backend/deploy, engineering process, creative, power tools, agent orchestration (OmO, Herdr), macOS automation, and connectors (Slack, Discord, KakaoTalk, Notion, Obsidian, Vaultwarden).",
+  "version": "1.0.0",
   "author": {
     "name": "trac3r00"
   },
-  "homepage": "https://github.com/trac3r00/agent-skills",
+  "homepage": "https://github.com/trac3r00/core-skills",
   "license": "MIT",
   "keywords": [
     "agent-memory",

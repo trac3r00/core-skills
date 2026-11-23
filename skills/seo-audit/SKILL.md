@@ -2,7 +2,7 @@
 name: seo-audit
 description: Scores on-page SEO for HTML files — title length, meta description, single h1, image alt text, canonical link, Open Graph tags, and html lang. Reads a saved HTML file or stdin (from curl), fully offline and deterministic, no Lighthouse or browser needed. Use before publishing any page, in CI on static builds, or when auditing a site without spinning up a browser.
 when_to_use: You built or are about to publish a page and want the basics that decide whether it can rank and share correctly. NOT a full SEO platform (no backlinks, no keyword research, no Core Web Vitals) — it covers the on-page HTML that the page itself controls.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 metadata:
   agentskills:
@@ -40,5 +40,5 @@ exit 1 below 70.
 
 ## Pairs with
 
-`webapp-testing` (browser-level QA after the static checks pass),
+`sec-headers` (the response-header check for the same pages),
 `doc-reader` (extract the HTML first if it is buried in a document).

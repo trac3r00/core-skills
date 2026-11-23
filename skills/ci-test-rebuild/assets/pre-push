@@ -1,0 +1,43 @@
+#!/bin/sh
+set -eu
+# Git exports these to hooks; tests that build fixture repos would otherwise commit into this one.
+unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_COMMON_DIR GIT_PREFIX GIT_QUARANTINE_PATH
+base=$(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD main)
+changed=$(git diff --name-only --diff-filter=d "$base"...HEAD)
+[ -z "$changed" ] && exit 0
+if echo "$changed" | grep -qE '(^|/)(package\.json|bun\.lockb?|tsconfig[^/]*\.json|bunfig\.toml)$'; then
+  exec sh -c 'bun fmt --check . && bun check --no-script && bun test'
+fi
+bun fmt --check --changed="$base" & f=$!
+bun check --no-script & c=$!
+s=0
+bun test --changed="$base" || s=1
+wait $f || s=1
+wait $c || s=1
+export CODE="$(echo "$changed" | grep -E '\.(ts|tsx|js|jsx|mjs|cts|mts)$' | grep -vE '\.(test|spec)\.' || true)"
+export TESTS="$(git ls-files '*.test.*' '*.spec.*')"
+bun -e '
+const { resolve, dirname, relative } = require("node:path");
+const lines = (v) => (v ?? "").split("\n").filter(Boolean).map((f) => resolve(f));
+const left = new Set(lines(process.env.CODE));
+const scan = new Bun.Transpiler({ loader: "tsx" });
+const seen = new Set();
+const visit = (file) => {
+  if (seen.has(file) || !file.startsWith("/") || file.includes("/node_modules/")) return;
+  seen.add(file);
+  left.delete(file);
+  if (!/\.[cm]?[jt]sx?$/.test(file)) return;
+  for (const { path } of scan.scanImports(require("node:fs").readFileSync(file, "utf8"))) {
+    let next;
+    try { next = Bun.resolveSync(path, dirname(file)); } catch { continue; }
+    visit(next);
+  }
+};
+lines(process.env.TESTS).forEach(visit);
+if (left.size) {
+  console.log("changed code reached by no test:");
+  for (const f of left) console.log("  " + relative(".", f));
+  process.exit(1);
+}
+' || s=1
+exit $s

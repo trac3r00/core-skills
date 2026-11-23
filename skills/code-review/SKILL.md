@@ -2,7 +2,7 @@
 name: code-review
 description: Strict, ice-cold code review protocol — nothing is assumed, everything is questioned, every claim requires evidence. Reviews a diff or change set across correctness, security, error handling, API contracts, performance, and test integrity, with mandatory severity ratings and a no-rubber-stamp rule. The LLM-driven review pass that diff-review's mechanical checks cannot do.
 when_to_use: Before merging anything non-trivial, reviewing another agent's output, or when the user wants a genuinely adversarial read rather than a friendly LGTM. NOT the mechanical pass (use diff-review for that — run it first) and not a summary of what the code does; it is a judgment of whether it should ship.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 metadata:
   agentskills:
@@ -92,6 +92,5 @@ CONDITIONS:
 
 ## Pairs with
 
-`diff-review` (mechanical layer first), `merge-quiz` (human comprehension
-gate after), `remove-ai-slops` (structural cleanup), `blindspot`
-(pre-implementation risk recon).
+`diff-review` (mechanical layer first), `comment-checker` (narration
+comments the diff adds), `anti-bs` (unsupported completion claims).

@@ -2,7 +2,7 @@
 name: repo-audit
 description: Structural health check for a git repository — LICENSE, README, tests, CI config, .gitignore, large tracked files, and stale merged branches (idle beyond a configurable window). Offline, stdlib + git CLI, deterministic. Use when inheriting a repo, before open-sourcing, or as a periodic hygiene gate across many repos.
 when_to_use: "Is this repo maintained?", onboarding onto an unfamiliar codebase, or a fleet-wide hygiene check. NOT a code-quality tool (it checks structure, not code) and not a vulnerability scanner.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 metadata:
   agentskills:
@@ -39,6 +39,6 @@ for d in ~/src/*/; do python3 scripts/repo_audit.py "$d" --json; done
 
 ## Pairs with
 
-`git-master` (act on the stale branches this finds),
+`cleanup-worktrees` (remove the stale branches this finds),
 `skill-audit` (the same structural-hygiene idea, for agent skills),
 `diff-review` (the per-change gate; this is the per-repo gate).

@@ -1,17 +1,18 @@
 # Review brief
 
-Adapt this outline into a concrete brief; replace every placeholder. The
-reviewer has real tools and reads the repository itself, so give it roots and
-boundaries rather than a packed bundle.
+The handoff engine creates this brief and binds its hash in the manifest. GPT-6
+Pro has no repository access: the engine uploads the verified scoped files as one zip
+(for its Python sandbox), pastes them in full when they fit, and ends the prompt with an
+exact statement of what was sent and that nothing else is visible. Do not rewrite a
+planned brief after its hash has been recorded.
 
 ```text
 Review question:
 [One specific question, and whether this is code, design, or diagnosis.]
 
 Reviewer role:
-[Independent reviewer. Inspect the named paths directly, with your own tools.
-Create only the named report file; do not modify source, tests, configuration,
-credentials, or git state.]
+[Independent reviewer. Read only the attached or inline scoped files.
+Do not claim to have opened repository paths or run commands.]
 
 Trusted roots:
 [Absolute directories you may read. Do not read anything outside them. Never
@@ -27,9 +28,8 @@ Behaviour that must not change:
 [Contracts, compatibility, performance budgets, ownership boundaries.]
 
 Context you need:
-[Stack, runtime and platform versions, entrypoints, and the exact commands used
-to build, test, and lint. Include prior attempts and verbatim errors, and
-distinguish what was observed from what is hypothesized.]
+[Stack, entrypoints, observed failures, and the checks actually run locally.
+Distinguish observation from hypothesis.]
 
 Constraints:
 [User-stated boundaries, files not to change, and anything already verified
@@ -50,13 +50,15 @@ Review requirements:
   uncertainty.
 - Do not claim to have run a command you did not run.
 
-Write your report to: [absolute artifact path]
-End the report with: [the marker line the conductor waits for]
+Return the complete report as the reply. The transport saves it to:
+[absolute artifact path]
+End the reply with: [the marker line the conductor waits for]
 ```
 
 Rules for the conductor:
 
-- Send the brief as one message; do not split scope across turns.
-- The artifact file is the completion channel, not a console echo of the brief.
+- Send the brief and verified files as one message; do not split scope across
+  turns or upload unverified repository paths.
+- The locally published report is the completion channel, not a console echo.
 - Ask for a patch only when the user asked for implementation; a review request
   ends with findings, open questions, and the smallest next step.

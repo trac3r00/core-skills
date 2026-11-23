@@ -2,8 +2,8 @@
 
 Herdr's server speaks newline-delimited JSON over a Unix socket. Every CLI verb is a thin
 wrapper around one method, so anything the CLI can do is scriptable directly, and the
-schema exposes capabilities the 0.9.1 CLI does not surface as subcommands (plugins, event
-streaming, layout capture/restore, graphics, selections).
+schema exposes capabilities the CLI does not surface as subcommands (plugins, event
+streaming, layout capture/restore, selections).
 
 - Session socket: `~/.config/herdr/herdr.sock` (per named session: its own
   `session_dir` + `socket_path`, listed by `herdr session list --json`)
@@ -54,7 +54,6 @@ Observed request ids follow `<surface>:<group>:<verb>` (`cli:agent:list`,
 `pane.send_text`, `pane.send_keys`, `pane.send_input`, `pane.wait_for_output`,
 `pane.scroll`, `pane.selection.read`, `pane.copy_search`, `pane.copy_motion`,
 `pane.edit_scrollback`, `pane.link.activate`, `pane.link.resolve`,
-`pane.graphics.set`, `pane.graphics.info`, `pane.graphics.clear`,
 `pane.report_agent`, `pane.report_agent_session`, `pane.report_metadata`,
 `pane.release_agent`, `pane.clear_agent_authority`
 

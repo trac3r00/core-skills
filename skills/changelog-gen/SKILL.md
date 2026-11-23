@@ -2,7 +2,7 @@
 name: changelog-gen
 description: Generates a categorized changelog skeleton from conventional commits since a tag or ref — Added/Changed/Fixed/Documentation/Internal sections with scope annotations preserved. Deterministic; the agent writes prose, this provides the honest skeleton from git history itself.
 when_to_use: Before any release, when writing release notes, or when a project has conventional-commit history but no changelog discipline. NOT a prose writer — it produces the categorized skeleton; a human or agent writes the narrative on top.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 metadata:
   agentskills:
@@ -37,5 +37,5 @@ Non-conventional commits land in Other — visible, not silently dropped.
 
 ## Pairs with
 
-`git-master` (the history this reads), `repo-audit` (the repo hygiene gate
+`repo-audit` (the repo hygiene gate
 that would flag a missing changelog workflow).

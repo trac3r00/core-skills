@@ -2,7 +2,7 @@
 name: json-diff
 description: Semantic diff between two JSON documents reported by JSON path — added, removed, changed with old/new values, recursing nested objects and comparing arrays positionally. Use when `diff` on JSON is useless (key reordering, formatting noise), for config drift checks, API response comparison, or CI gates on expected output.
 when_to_use: Comparing configs across environments, golden-file API tests, verifying a migration produced exactly the intended changes. NOT a schema validator; it compares two concrete documents, not a document against a schema.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 metadata:
   agentskills:
@@ -38,5 +38,4 @@ exceeds N (use 0 for "must be identical").
 
 ## Pairs with
 
-`env-gate` (config completeness), `api-tester` (fetch the JSON this diffs),
-`verification-before-completion` (the discipline that makes you run it).
+`env-gate` (config completeness), `api-tester` (fetch the JSON this diffs).

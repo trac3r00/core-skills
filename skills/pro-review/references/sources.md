@@ -2,26 +2,33 @@
 
 ## What this skill is
 
-OmO Pro Review is a native second-opinion workflow. It ships no reviewer of its
-own: it scopes a change set, hands a complete brief to a real agent client that
-you already trust, harvests the report artifact, machine-checks it, and then
-verifies every finding locally before reporting.
+OmO Pro Review scopes a change set, sends a complete brief to GPT-6 Pro
+through our own ChatGPT browser transport (Pro checked before send and on
+ChatGPT's record of the answer), harvests the report artifact,
+machine-checks it, and verifies every finding locally before reporting.
 
 Pieces:
 
 - `SKILL.md` - the conductor workflow.
-- `references/clients.md` - engines (pane client, headless client, in-session
-  subagent), per-client commands, and the traps verified on this machine.
+- `references/pro-engine.md` - the transport, the two Pro proofs, sign-in, and recovery.
 - `references/review-brief.md` - how to compose the brief.
 - `references/report-template.md` - the report contract the client must fill.
+- `references/bridge.md` - the optional workspace bridge.
 - `scripts/handoff.mjs` - zero-dependency scope/brief/verify/status engine.
+- `scripts/pro-engine.mjs` - `plan`, `run` and `recover` for the Pro engine.
+- `scripts/chatgpt-transport.mjs` - our own browser transport (`login`, `check`, `status`).
+- `scripts/zip.mjs` - the dependency-free, deterministic scope zip.
+- `scripts/bridge.mjs` - optional loopback MCP server that serves one verified
+  handoff to ChatGPT over Secure MCP Tunnel ([bridge.md](bridge.md)). Official
+  sources: OpenAI's Secure MCP Tunnel guide
+  (developers.openai.com/api/docs/guides/secure-mcp-tunnels), the custom MCP
+  server guide (developers.openai.com/api/docs/guides/custom-mcp-server), and
+  github.com/openai/tunnel-client (Apache-2.0).
 
 ## Why it is built this way
 
-- **Clients, not wrappers.** A real client brings its own tools, session, model
-  routing, and credentials. Duplicating that in a wrapper would freeze a
-  smaller copy of a client that already exists and ages faster than the client
-  itself.
+- **One reviewer, one Pro-only route.** No other client can attest to a GPT-6
+  Pro review; transport failure must not become a different reviewer.
 - **Artifacts, not transcripts.** Console markers can be satisfied by the echo
   of the prompt. The report file written by the client is the only trustworthy
   completion signal.
@@ -38,28 +45,26 @@ Pieces:
   (secret-shaped paths, binary content, oversized files, generated and log
   shaped files) so that nobody has to remember which paths must never leave the
   machine.
-- **Selection evidence is not attestation.** A client status line shows what
-  the client believes it selected. It is not proof of the backend that produced
-  a given answer, and this skill never upgrades it in the summary.
+- **Selection evidence is not attestation.** The checked GPT-6 row at Pro effort
+  in the picker, and the `model_slug` in ChatGPT's record, are ChatGPT's own
+  statements, not independent proof of the backend that produced an answer.
 
-## Verified on this machine (2026-09-22, Herdr 0.9.1, node v26.7.0)
+## Verification
 
-- The pane flow was exercised against a real client: split, launch, brief,
-  answer, and an artifact written to the exact requested path.
-- A pane-launched OmO client is not listed by `herdr agent list` in this
-  install, so OmO uses pane commands plus the artifact protocol; clients whose
-  Herdr integration reports `current` can use `agent prompt --wait` instead.
-- `herdr agent start <name> --kind pi` launched the first `pi` on that pane PATH
-  (upstream Pi with its own config), not OmO. Verify the client a `--kind`
-  launch produced before trusting it.
-- `handoff.mjs` scope, exclusion, split, and verify behaviour is covered by the
-  author's local skill-contract suite (not shipped with the skill).
+- Bundled tests: `node --test skills/pro-review/test/*.test.mjs` (transport,
+  transport home, bridge).
+- The transport checks the live picker before submitting and refuses
+  publication without saved same-session evidence; live runs are recorded in
+  [pro-engine.md](pro-engine.md#evidence).
 
 ## Boundaries
 
 - No model, provider, or auth configuration is added or modified.
-- The Pro engine drives a pinned third-party browser transport (see [pro-engine.md](pro-engine.md))
-  because the Pro tier has no API; scope selection, the brief, the report contract,
-  verification, and the credential boundary are ours.
+- The Pro engine drives ChatGPT in the user's default Chromium browser, on a
+  dedicated profile, through our own
+  zero-dependency transport (see [pro-engine.md](pro-engine.md)) because the Pro tier
+  has no API. Its launch flags and page flow were adapted from steipete/oracle (MIT);
+  no third-party code runs. Scope, brief, report contract, verification and the
+  credential boundary are ours too.
 - Review-only by default: findings and the smallest next step, nothing else,
   unless the user separately asks for implementation.

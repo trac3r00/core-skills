@@ -1141,7 +1141,7 @@ def test_session_finder_groups_by_client():
     # Fixture agent: a process whose argv names a known client, so the scan
     # has a session to group on any host (CI runners have no live agents).
     # argv[0] is neutral so the interpreter path (e.g. a venv inside an
-    # "agent-skills" checkout, which the scanner excludes) cannot hide it; the
+    # "core-skills" checkout, which the scanner excludes) cannot hide it; the
     # trailing "codex" survives macOS framework stubs that re-exec with the
     # real interpreter path as argv[0].
     fake = sp.Popen(["codex", "-c", "import time; time.sleep(60)", "codex"],
@@ -1199,12 +1199,11 @@ import sys
 apps = ("Finder", "TextEdit")
 script = sys.argv[sys.argv.index("-e") + 1]
 if "every process whose visible" in script:
-    print("Finder :: 1 window(s)\\nTextEdit :: 2 window(s)")
-elif script.endswith(" to activate"):
-    app = script.split('"')[1]
-    if app not in apps:
-        sys.exit("execution error: Can't get application \\"%s\\". (-1728)" % app)
-elif "AXWindowNumber" in script:
+    print("W\\x1fFinder\\x1f1 window(s)\\x1eW\\x1fTextEdit\\x1f2 window(s)")
+elif "set frontmost of process" in script:
+    if sys.argv[-1] not in apps:
+        sys.exit("execution error: Can't get process \\"%s\\". (-1728)" % sys.argv[-1])
+elif "CGWindowListCopyWindowInfo" in script:
     print("4242")
 else:
     sys.exit(1)
@@ -1238,7 +1237,10 @@ def test_appshot_fullscreen_capture(tmp_path):
     assert rc == 0
     assert out_file.exists() and out_file.stat().st_size > 10000
     assert out_file.read_bytes()[:4] == b"\x89PNG"
-    assert log.read_text().split() == ["-x", str(out_file)]
+    # The capture lands in a private temp file beside --out, then is renamed into place.
+    flag, written = log.read_text().split()
+    assert flag == "-x" and Path(written).parent.parent == out_file.parent
+    assert not Path(written).exists()
 
 
 def test_appshot_list_windows(tmp_path):
@@ -1257,7 +1259,8 @@ def test_appshot_app_window_capture(tmp_path):
     rc, out, _ = _run_as(env, "--app", "TextEdit", "--out", str(out_file), "--json")
     assert rc == 0
     assert json.loads(out)["captured"] == str(out_file)
-    assert log.read_text().split() == ["-l", "4242", str(out_file)]
+    assert out_file.read_bytes()[:4] == b"\x89PNG"
+    assert log.read_text().split()[:2] == ["-l", "4242"]
 
 
 def test_appshot_missing_app(tmp_path):
@@ -1265,7 +1268,7 @@ def test_appshot_missing_app(tmp_path):
     rc, _, err = _run_as(env, "--app", "NonExistentApp12345XYZ", "--out",
                          str(tmp_path / "x.png"))
     assert rc == 1
-    assert "not found" in err.lower() or "no window" in err.lower()
+    assert "activation failed" in err.lower() and "nonexistentapp12345xyz" in err.lower()
     assert not log.exists()
 
 
@@ -1604,7 +1607,7 @@ def test_sys_health_reports_metrics():
     data = json.loads(out)
     assert data["disk"]["total_gb"] > 0
     assert data["memory"]["total_gb"] > 0
-    assert data["load"]["1m"] >= 0
+    assert data["load"]["m1"] >= 0
     assert isinstance(data["top_processes"], list) and data["top_processes"]
 
 

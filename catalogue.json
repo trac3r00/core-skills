@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "count": 67,
+  "count": 83,
   "families": {
     "backend": [
       "api-tester",
@@ -11,8 +11,6 @@
       "doc-reader",
       "env-gate",
       "ext-scaffold",
-      "gh-address-comments",
-      "gh-fix-ci",
       "graph-tools",
       "json-diff",
       "log-analyzer",
@@ -24,15 +22,19 @@
       "seo-audit",
       "sys-health"
     ],
+    "connectors": [
+      "discord-messenger",
+      "kakao-messenger",
+      "notion",
+      "obsidian-vault",
+      "slack-messenger",
+      "vaultwarden"
+    ],
     "creative": [
       "3d-design",
-      "algorithmic-art",
-      "css-pro-tips",
-      "design",
+      "claude-design",
       "image-gen",
-      "nbj-write-clearly",
-      "visual-qa",
-      "webapp-testing"
+      "karpathy-prompt"
     ],
     "guards": [
       "claim-audit",
@@ -49,37 +51,57 @@
       "skill-sync",
       "usage-audit"
     ],
-    "other": [
+    "macos": [
+      "apple-home",
+      "apple-suite",
+      "apple-tv",
       "appshot",
-      "proxmox-ve",
+      "finder",
+      "iphone-mirroring",
+      "macos-settings",
+      "moffice",
+      "phone-facetime",
+      "spotify"
+    ],
+    "orchestration": [
+      "apps-handoff",
+      "browser-aside",
+      "herdr",
+      "max-build",
+      "omo-runner",
+      "optimize-omo-config",
+      "project-sessions",
+      "prompt-builder",
+      "reorient",
       "session-finder",
+      "watcher"
+    ],
+    "other": [
+      "game-film",
+      "proxmox-ve",
+      "side-hustle",
       "skill-picker",
-      "social-research"
+      "social-research",
+      "tv-detox"
     ],
     "power": [
-      "apple-suite",
-      "git-master",
-      "herdr",
-      "lsp-setup",
+      "create-skills",
+      "init-readme",
       "pro-review",
-      "remove-ai-slops",
-      "skill-creator",
-      "skill-optimizer",
-      "ultimate-browsing"
+      "readme-init"
     ],
     "process": [
+      "anti-bs",
       "astra-init",
-      "blindspot",
-      "domain-modeling",
-      "grilling",
-      "linus-level",
-      "log-deviation",
-      "merge-quiz",
-      "systematic-debugging",
-      "test-driven-development",
-      "using-git-worktrees",
-      "verification-before-completion",
-      "verify-ref"
+      "ci-test-rebuild",
+      "cleanup-worktrees",
+      "cyber-bypass",
+      "dft",
+      "fdd",
+      "finish-pr",
+      "init-rules",
+      "loe",
+      "preflight"
     ],
     "security": [
       "secret-gate",
@@ -90,120 +112,126 @@
     "agentic": [
       "astra-init",
       "context-budget",
+      "create-skills",
+      "cyber-bypass",
       "herdr",
-      "linus-level",
-      "log-deviation",
+      "max-build",
+      "omo-runner",
       "open-loops",
       "pro-review",
+      "project-sessions",
+      "prompt-builder",
+      "reorient",
+      "session-finder",
       "session-handoff",
       "session-rules",
       "skill-audit",
-      "skill-creator",
       "skill-decay",
-      "skill-optimizer",
       "skill-sync",
-      "usage-audit"
+      "usage-audit",
+      "watcher"
     ],
     "backend": [
       "api-tester",
       "diff-review",
       "doc-reader",
       "env-gate",
-      "gh-address-comments",
-      "gh-fix-ci",
-      "git-master",
       "json-diff",
       "log-analyzer",
-      "lsp-setup",
-      "portfolio-audit",
-      "systematic-debugging",
-      "test-driven-development"
+      "portfolio-audit"
     ],
     "career": [
       "doc-reader",
-      "nbj-write-clearly",
-      "resume-audit"
+      "resume-audit",
+      "side-hustle"
     ],
     "coding": [
+      "anti-bs",
       "comment-checker",
       "diff-review",
-      "domain-modeling",
-      "git-master",
-      "grilling",
-      "lsp-setup",
-      "remove-ai-slops",
-      "secret-gate",
-      "systematic-debugging",
-      "test-driven-development"
+      "fdd",
+      "finish-pr",
+      "secret-gate"
+    ],
+    "data": [
+      "json-diff",
+      "log-analyzer"
     ],
     "design": [
       "3d-design",
-      "algorithmic-art",
-      "css-pro-tips",
-      "design",
+      "claude-design",
       "image-gen",
-      "nbj-write-clearly",
-      "seo-audit",
-      "visual-qa"
+      "seo-audit"
     ],
     "devops": [
       "api-tester",
       "changelog-gen",
+      "ci-test-rebuild",
+      "cleanup-worktrees",
       "diff-review",
       "env-gate",
-      "gh-fix-ci",
-      "git-master",
       "herdr",
       "log-analyzer",
-      "lsp-setup",
+      "preflight",
       "repo-audit",
-      "secret-gate"
+      "secret-gate",
+      "sys-health"
     ],
     "finance": [
       "portfolio-audit",
       "subscription-audit"
     ],
     "frontend": [
-      "algorithmic-art",
-      "css-pro-tips",
-      "design",
-      "seo-audit",
-      "visual-qa",
-      "webapp-testing"
+      "claude-design",
+      "seo-audit"
     ],
     "macos": [
-      "apple-suite"
+      "apple-home",
+      "apple-suite",
+      "apple-tv",
+      "appshot",
+      "finder",
+      "iphone-mirroring",
+      "kakao-messenger",
+      "macos-settings",
+      "moffice",
+      "phone-facetime",
+      "spotify"
     ],
     "qa": [
+      "dft",
       "diff-review",
-      "seo-audit",
-      "verification-before-completion",
-      "visual-qa",
-      "webapp-testing"
+      "preflight",
+      "seo-audit"
     ],
     "research": [
+      "game-film",
+      "notion",
+      "obsidian-vault",
       "session-handoff",
-      "ultimate-browsing",
       "usage-audit"
     ],
     "verification": [
-      "blindspot",
+      "anti-bs",
       "claim-audit",
       "comment-checker",
+      "dft",
       "diff-review",
       "env-gate",
       "gate-graph",
-      "merge-quiz",
+      "loe",
       "portfolio-audit",
+      "preflight",
       "pro-review",
       "resume-audit",
       "secret-gate",
       "seo-audit",
-      "skill-audit",
-      "systematic-debugging",
-      "test-driven-development",
-      "verification-before-completion",
-      "verify-ref"
+      "skill-audit"
+    ],
+    "writing": [
+      "init-readme",
+      "karpathy-prompt",
+      "readme-init"
     ]
   },
   "skills": [
@@ -227,23 +255,24 @@
       "path": "skills/3d-design"
     },
     {
-      "name": "algorithmic-art",
-      "description": "Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations.",
-      "version": "1.0.0",
-      "license": "Apache-2.0 (derived from anthropics/skills; see LICENSE.txt)",
+      "name": "anti-bs",
+      "description": "\"Audit a response for invented facts, fake completion, unsupported claims, and order drift. Use for an anti-bs or order audit. Not for code review (review-work).\"",
+      "version": "1.0.1",
+      "license": "MIT",
       "tags": [
-        "generative-art",
-        "p5js",
-        "creative-coding",
-        "design"
+        "audit",
+        "hallucination",
+        "fake-completion",
+        "claims",
+        "verification"
       ],
-      "family": "creative",
+      "family": "process",
       "personas": [
-        "design",
-        "frontend"
+        "coding",
+        "verification"
       ],
       "script_backed": false,
-      "path": "skills/algorithmic-art"
+      "path": "skills/anti-bs"
     },
     {
       "name": "api-tester",
@@ -266,9 +295,32 @@
       "path": "skills/api-tester"
     },
     {
+      "name": "apple-home",
+      "description": "\"Read and control Apple Home via Home.app: rooms, accessory state, scenes, on/off toggles. Use for home devices. Not for Mac settings (macos-settings).\"",
+      "version": "1.0.2",
+      "license": "MIT",
+      "tags": [
+        "macos",
+        "apple",
+        "home",
+        "homekit",
+        "smart-home",
+        "lights",
+        "scenes",
+        "accessibility",
+        "automation"
+      ],
+      "family": "macos",
+      "personas": [
+        "macos"
+      ],
+      "script_backed": true,
+      "path": "skills/apple-home"
+    },
+    {
       "name": "apple-suite",
-      "description": "Automates macOS apps via AppleScript and URL schemes \u2014 Notes, Reminders, Maps, Mail, Calendar, Terminal, Shortcuts, Contacts, Photos, App Store search, and Phone. Runs locally through osascript with no API keys and no network for the AppleScript operations. Each app's scriptability is honestly assessed; non-scriptable apps (VoiceMemos, Passwords, Find My, Activity Monitor, App Store listing) are documented with their real limitations rather than faked.",
-      "version": "1.0.0",
+      "description": "\"Script Apple apps (Notes, Reminders, Calendar, Mail, Maps, Contacts, Shortcuts) via AppleScript. Use for those apps. Not for calls (phone-facetime).\"",
+      "version": "1.0.2",
       "license": "MIT",
       "tags": [
         "macos",
@@ -283,7 +335,7 @@
         "photos",
         "automation"
       ],
-      "family": "power",
+      "family": "macos",
       "personas": [
         "macos"
       ],
@@ -291,9 +343,48 @@
       "path": "skills/apple-suite"
     },
     {
+      "name": "apple-tv",
+      "description": "\"Read and control the macOS TV app via AppleScript: library search, now playing, playback. Use for TV.app on this Mac. Not for Spotify (spotify).\"",
+      "version": "1.0.2",
+      "license": "MIT",
+      "tags": [
+        "macos",
+        "apple",
+        "tv",
+        "apple-tv",
+        "applescript",
+        "media"
+      ],
+      "family": "macos",
+      "personas": [
+        "macos"
+      ],
+      "script_backed": true,
+      "path": "skills/apple-tv"
+    },
+    {
+      "name": "apps-handoff",
+      "description": "\"Resume an OmO desktop thread in a CLI terminal with its full history. Use for $apps-handoff <id>. Not for CLI session resume (project-sessions).\"",
+      "version": "1.0.1",
+      "license": "MIT",
+      "tags": [
+        "omo",
+        "desktop",
+        "cli",
+        "sessions",
+        "handoff",
+        "herdr",
+        "macos"
+      ],
+      "family": "orchestration",
+      "personas": [],
+      "script_backed": false,
+      "path": "skills/apps-handoff"
+    },
+    {
       "name": "appshot",
-      "description": "Takes screenshots of any macOS app window, the full screen, or an interactive region using the native screencapture command \u2014 zero dependencies. Capture a browser, Notes, a desktop agent app, or anything with a window. Use for visual QA evidence, app-state documentation, or \"show me what X looks like right now\".",
-      "version": "1.0.0",
+      "description": "\"Capture a macOS window, screen, or region as a PNG with screencapture. Use for visual evidence or desktop state. Not for UI judgment (visual-qa).\"",
+      "version": "1.0.5",
       "license": "MIT",
       "tags": [
         "screenshot",
@@ -302,8 +393,10 @@
         "visual-qa",
         "evidence"
       ],
-      "family": "other",
-      "personas": [],
+      "family": "macos",
+      "personas": [
+        "macos"
+      ],
       "script_backed": true,
       "path": "skills/appshot"
     },
@@ -327,22 +420,26 @@
       "path": "skills/astra-init"
     },
     {
-      "name": "blindspot",
-      "description": "Read-only reconnaissance pass over an unfamiliar codebase, system, or feature area to surface hidden risks before any code is written. Use when starting work in unfamiliar territory, before a risky change, or when the user says \"blindspot pass\", \"what am I missing\", or \"scan for risks\".",
-      "version": "1.0.0",
+      "name": "browser-aside",
+      "description": "\"Hand this session to Aside's browser chat on this model; resume on return. Use only on $browser-aside or 'continue in Aside'. Not for web automation (browser).\"",
+      "version": "2.0.3",
       "license": "MIT",
-      "tags": [],
-      "family": "process",
-      "personas": [
-        "verification"
+      "tags": [
+        "browser",
+        "aside",
+        "handoff",
+        "provider",
+        "playwright"
       ],
+      "family": "orchestration",
+      "personas": [],
       "script_backed": false,
-      "path": "skills/blindspot"
+      "path": "skills/browser-aside"
     },
     {
       "name": "changelog-gen",
       "description": "Generates a categorized changelog skeleton from conventional commits since a tag or ref \u2014 Added/Changed/Fixed/Documentation/Internal sections with scope annotations preserved. Deterministic; the agent writes prose, this provides the honest skeleton from git history itself.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "license": "MIT",
       "tags": [
         "changelog",
@@ -356,6 +453,26 @@
       ],
       "script_backed": true,
       "path": "skills/changelog-gen"
+    },
+    {
+      "name": "ci-test-rebuild",
+      "description": "\"Rebuild JS/TS tests and checks as a fast local Bun gate, proven by before/after metrics. Use for slow or bloated tests/CI. Not for one failing test (debugging).\"",
+      "version": "0.5.0",
+      "license": "MIT",
+      "tags": [
+        "ci",
+        "testing",
+        "bun",
+        "javascript",
+        "typescript",
+        "performance"
+      ],
+      "family": "process",
+      "personas": [
+        "devops"
+      ],
+      "script_backed": false,
+      "path": "skills/ci-test-rebuild"
     },
     {
       "name": "claim-audit",
@@ -377,9 +494,47 @@
       "path": "skills/claim-audit"
     },
     {
+      "name": "claude-design",
+      "description": "\"Create or revise Claude Artifacts (Docs, Slides, Design, Dashboards) through OmO's signed-in browser. Use only as $claude-design.\"",
+      "version": "0.3.0",
+      "license": "MIT",
+      "tags": [
+        "design",
+        "ui",
+        "claude",
+        "prototype",
+        "frontend"
+      ],
+      "family": "creative",
+      "personas": [
+        "design",
+        "frontend"
+      ],
+      "script_backed": false,
+      "path": "skills/claude-design"
+    },
+    {
+      "name": "cleanup-worktrees",
+      "description": "\"Inventory Git worktrees and local branches, then remove only exact approved targets. Use for explicit worktree or branch cleanup. Not for PRs (finish-pr).\"",
+      "version": "1.1.0",
+      "license": "MIT",
+      "tags": [
+        "git",
+        "worktrees",
+        "branches",
+        "cleanup"
+      ],
+      "family": "process",
+      "personas": [
+        "devops"
+      ],
+      "script_backed": false,
+      "path": "skills/cleanup-worktrees"
+    },
+    {
       "name": "code-review",
       "description": "Strict, ice-cold code review protocol \u2014 nothing is assumed, everything is questioned, every claim requires evidence. Reviews a diff or change set across correctness, security, error handling, API contracts, performance, and test integrity, with mandatory severity ratings and a no-rubber-stamp rule. The LLM-driven review pass that diff-review's mechanical checks cannot do.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "license": "MIT",
       "tags": [
         "code-review",
@@ -433,6 +588,24 @@
       "path": "skills/context-budget"
     },
     {
+      "name": "create-skills",
+      "description": "\"Author or revise Agent Skills from reports, docs, and workflows. Use when asked to write a SKILL.md package. Not for project docs (init-deep).\"",
+      "version": "0.1.3",
+      "license": "MIT",
+      "tags": [
+        "skill-authoring",
+        "skill-md",
+        "agent-skills",
+        "docs"
+      ],
+      "family": "power",
+      "personas": [
+        "agentic"
+      ],
+      "script_backed": false,
+      "path": "skills/create-skills"
+    },
+    {
       "name": "cron-audit",
       "description": "Parses a crontab, expands every schedule into concrete values, explains each job in plain words, and flags invalid lines, impossible schedules, and over-frequent jobs. Crontab syntax is write-only for most humans; this makes it readable. Stdlib-only, deterministic.",
       "version": "1.0.0",
@@ -450,44 +623,43 @@
       "path": "skills/cron-audit"
     },
     {
-      "name": "css-pro-tips",
-      "description": "Use when writing, reviewing, refactoring, or modernizing CSS/Tailwind with source-validated patterns for resets, box sizing, focus styles, centering, aspect ratios, selectors, layout, modern CSS, progressive enhancement, older-pattern modernization, MDN Baseline support buckets, user-preference media queries (reduced motion, contrast, forced colors, reduced transparency), container size and style queries, @property, popovers, View Transitions, custom highlights, scroll-state queries, text-box trim, and typed attr().",
-      "version": "1.0.0",
-      "license": "MIT (from PyModel/css-pro-tips; see LICENSE.txt)",
+      "name": "cyber-bypass",
+      "description": "\"Restate a prompt stopped by a Codex or Claude cyber-safety flag with its real context. Use when a cyber flag blocks work. Not for test failures (debugging).\"",
+      "version": "1.0.2",
+      "license": "MIT",
       "tags": [
-        "css",
-        "tailwind",
-        "frontend",
-        "modern-css"
+        "prompting",
+        "safety-flags",
+        "codex",
+        "claude",
+        "security-research"
       ],
-      "family": "creative",
+      "family": "process",
       "personas": [
-        "design",
-        "frontend"
+        "agentic"
       ],
       "script_backed": false,
-      "path": "skills/css-pro-tips"
+      "path": "skills/cyber-bypass"
     },
     {
-      "name": "design",
-      "description": "Claude-grade visual design outside Claude Code \u2014 distinctive web/UI design direction, poster and canvas art philosophy, and a 10-theme styling library, portable to any agent that reads SKILL.md. Use when building or restyling a UI, landing page, poster, slide deck, static art piece, or any artifact that must not look AI-generated.",
-      "version": "1.0.0",
-      "license": "Apache-2.0 (derived from anthropics/skills; see LICENSE.txt)",
+      "name": "dft",
+      "description": "\"Dogfood the built product through its real entry points and report journey failures. Use when asked to dogfood a release. Not for code review (review-work).\"",
+      "version": "0.1.3",
+      "license": "MIT",
       "tags": [
-        "design",
-        "frontend",
-        "ui",
-        "typography",
-        "art",
-        "themes"
+        "dogfooding",
+        "qa",
+        "release",
+        "journeys",
+        "testing"
       ],
-      "family": "creative",
+      "family": "process",
       "personas": [
-        "design",
-        "frontend"
+        "qa",
+        "verification"
       ],
-      "script_backed": true,
-      "path": "skills/design"
+      "script_backed": false,
+      "path": "skills/dft"
     },
     {
       "name": "diff-review",
@@ -513,6 +685,22 @@
       "path": "skills/diff-review"
     },
     {
+      "name": "discord-messenger",
+      "description": "\"Read Discord channels and send replies via bot API or desktop app. Use for Discord news or replying; send only after approval. Not for Slack (slack-messenger).\"",
+      "version": "1.2.0",
+      "license": "MIT",
+      "tags": [
+        "discord",
+        "messaging",
+        "bot-api",
+        "chat"
+      ],
+      "family": "connectors",
+      "personas": [],
+      "script_backed": false,
+      "path": "skills/discord-messenger"
+    },
+    {
       "name": "doc-reader",
       "description": "Extracts plain text from office and web documents with zero dependencies \u2014 docx, pptx, xlsx, html, markdown, and plain text, using only Python's stdlib (zipfile + xml.etree). No LibreOffice, no python-docx, no network. PDF delegates to pdftotext when installed, reporting honestly when it is not. Use when an agent needs to read, summarize, or compare documents without installing document tooling.",
       "version": "1.0.0",
@@ -532,24 +720,6 @@
       ],
       "script_backed": true,
       "path": "skills/doc-reader"
-    },
-    {
-      "name": "domain-modeling",
-      "description": "Build and sharpen a project's domain model. Use when discussing codebase terminology, writing or editing a CONTEXT.md, or recording or editing an ADR.",
-      "version": "1.0.0",
-      "license": "MIT (from schneidenbach/skills; see LICENSE.txt)",
-      "tags": [
-        "domain-model",
-        "adr",
-        "glossary",
-        "architecture"
-      ],
-      "family": "process",
-      "personas": [
-        "coding"
-      ],
-      "script_backed": false,
-      "path": "skills/domain-modeling"
     },
     {
       "name": "env-gate",
@@ -589,6 +759,85 @@
       "path": "skills/ext-scaffold"
     },
     {
+      "name": "fdd",
+      "description": "\"Fuzz-driven development: generated inputs break invariants; shrunk repros become tests. Use for fuzzing parsers or state machines. Not for crashes (debugging).\"",
+      "version": "0.1.3",
+      "license": "MIT",
+      "tags": [
+        "fuzzing",
+        "property-testing",
+        "parsers",
+        "state-machines",
+        "testing"
+      ],
+      "family": "process",
+      "personas": [
+        "coding"
+      ],
+      "script_backed": false,
+      "path": "skills/fdd"
+    },
+    {
+      "name": "finder",
+      "description": "\"Read and control Finder: selection, listings, reveal/open, folders, tags, Trash, eject. Use for explicit Finder tasks. Not for Office files (moffice).\"",
+      "version": "1.0.3",
+      "license": "MIT",
+      "tags": [
+        "macos",
+        "finder",
+        "files",
+        "folders",
+        "tags",
+        "trash",
+        "eject",
+        "applescript",
+        "automation"
+      ],
+      "family": "macos",
+      "personas": [
+        "macos"
+      ],
+      "script_backed": true,
+      "path": "skills/finder"
+    },
+    {
+      "name": "finish-pr",
+      "description": "\"Commit scoped work, open or update a labeled PR, verify checks on its exact head. Use when asked to finish or PR work. Not for cleanup (cleanup-worktrees).\"",
+      "version": "0.2.0",
+      "license": "MIT",
+      "tags": [
+        "git",
+        "pull-requests",
+        "github",
+        "ci",
+        "commits"
+      ],
+      "family": "process",
+      "personas": [
+        "coding"
+      ],
+      "script_backed": false,
+      "path": "skills/finish-pr"
+    },
+    {
+      "name": "game-film",
+      "description": "\"Study a competitor's public playbook: docs, releases, pricing, community posts. Use when asked to game-film a competitor. Not for broad research (ulw-research).\"",
+      "version": "1.1.0",
+      "license": "MIT",
+      "tags": [
+        "competitor-research",
+        "product",
+        "strategy",
+        "research"
+      ],
+      "family": "other",
+      "personas": [
+        "research"
+      ],
+      "script_backed": false,
+      "path": "skills/game-film"
+    },
+    {
       "name": "gate-graph",
       "description": "Find overlap and dead weight in a Python gate layer by extracting AST fingerprints, generating an overlap matrix, and failing CI when redundant gates or too many gates are detected.",
       "version": "1.0.0",
@@ -609,67 +858,6 @@
       "path": "skills/gate-graph"
     },
     {
-      "name": "gh-address-comments",
-      "description": "Help address review/issue comments on the open GitHub PR for the current branch using gh CLI; verify gh auth first and prompt the user to authenticate if not logged in.",
-      "version": "1.0.0",
-      "license": "Apache-2.0 (from openai/skills; see LICENSE.txt)",
-      "tags": [
-        "github",
-        "ci",
-        "pr",
-        "workflow",
-        "review",
-        "agent"
-      ],
-      "family": "backend",
-      "personas": [
-        "backend"
-      ],
-      "script_backed": true,
-      "path": "skills/gh-address-comments"
-    },
-    {
-      "name": "gh-fix-ci",
-      "description": "Use when a user asks to debug or fix failing GitHub PR checks that run in GitHub Actions; use `gh` to inspect checks and logs, summarize failure context, draft a fix plan, and implement only after explicit approval. Treat external providers (for example Buildkite) as out of scope and report only the details URL.",
-      "version": "1.0.0",
-      "license": "Apache-2.0 (from openai/skills; see LICENSE.txt)",
-      "tags": [
-        "github",
-        "ci",
-        "pr",
-        "workflow",
-        "agent"
-      ],
-      "family": "backend",
-      "personas": [
-        "backend",
-        "devops"
-      ],
-      "script_backed": true,
-      "path": "skills/gh-fix-ci"
-    },
-    {
-      "name": "git-master",
-      "description": "\"MUST USE whenever a task needs a commit or git-history investigation. Covers atomic commits, staging, commit-message style, rebase, squash, fixup/autosquash, blame, bisect, reflog, git log -S/-G, and questions like who wrote this or when was this added. Do not use for ordinary code edits unless the user asks for git work.\"",
-      "version": "1.0.0",
-      "license": "MIT (from oh-my-opencode / omo-ai)",
-      "tags": [
-        "git",
-        "commits",
-        "rebase",
-        "history",
-        "bisect"
-      ],
-      "family": "power",
-      "personas": [
-        "backend",
-        "coding",
-        "devops"
-      ],
-      "script_backed": false,
-      "path": "skills/git-master"
-    },
-    {
       "name": "graph-tools",
       "description": "Builds and queries directed graphs from JSON edge lists \u2014 node/edge counts, in/out degree stats, cycle detection via DFS coloring, and BFS shortest paths. Dependency chains, call graphs, state machines, and org structures are all edge lists until someone makes them queryable. Stdlib-only, deterministic.",
       "version": "1.0.0",
@@ -686,27 +874,9 @@
       "path": "skills/graph-tools"
     },
     {
-      "name": "grilling",
-      "description": "Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.",
-      "version": "1.0.0",
-      "license": "MIT (from schneidenbach/skills; see LICENSE.txt)",
-      "tags": [
-        "planning",
-        "critique",
-        "stress-test",
-        "interview"
-      ],
-      "family": "process",
-      "personas": [
-        "coding"
-      ],
-      "script_backed": false,
-      "path": "skills/grilling"
-    },
-    {
       "name": "herdr",
-      "description": "\"Drive Herdr, a terminal workspace manager for AI coding agents, from any agent client (Claude Code, Codex, pi/senpi, Gemini, OpenCode, Kimi, Grok, Cursor, Hermes, and more). Covers the entire surface - workspaces, tabs, panes, agent lifecycle, worktrees, remote machines, integrations, config, and the 103-method socket API - so a client can build terminal layout, start and prompt sibling agents, read their output, wait on state changes, and coordinate parallel work. Use when the user mentions Herdr or when panes, tabs, sibling agents, or a persistent terminal session must be inspected or controlled.\"",
-      "version": "1.0.0",
+      "description": "\"Drive Herdr panes, tabs, agents, and worktrees via the herdr CLI. Use when a Herdr pane or agent must be read or driven. Not for process lists (session-finder).\"",
+      "version": "1.1.0",
       "license": "MIT",
       "tags": [
         "herdr",
@@ -718,7 +888,7 @@
         "socket-api",
         "cli"
       ],
-      "family": "power",
+      "family": "orchestration",
       "personas": [
         "agentic",
         "devops"
@@ -729,7 +899,7 @@
     {
       "name": "image-gen",
       "description": "Image generation routing and prompt discipline \u2014 which provider for which job (gpt-image for text rendering and design fidelity, grok for fast iteration and photoreal people), how to structure prompts that survive the model (subject, composition, style, lighting, negatives), and the honest constraints of each provider installed on this machine. Use before generating any image so the first generation is closer to the brief.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "license": "MIT",
       "tags": [
         "image-generation",
@@ -745,9 +915,65 @@
       "path": "skills/image-gen"
     },
     {
+      "name": "init-readme",
+      "description": "\"Overhaul a root README from file-cited explore evidence with an ultrabrain review gate. Use only for an explicit overhaul. Not for a refresh (readme-init).\"",
+      "version": "0.2.0",
+      "license": "MIT",
+      "tags": [
+        "readme",
+        "docs",
+        "documentation",
+        "review"
+      ],
+      "family": "power",
+      "personas": [
+        "writing"
+      ],
+      "script_backed": false,
+      "path": "skills/init-readme"
+    },
+    {
+      "name": "init-rules",
+      "description": "\"Create or update a repo's root Rules.md: DO/MUST rule records grounded in project docs. Use only when asked to set project rules. Not for AGENTS.md (init-deep).\"",
+      "version": "0.1.3",
+      "license": "MIT",
+      "tags": [
+        "rules",
+        "conventions",
+        "project-setup",
+        "docs"
+      ],
+      "family": "process",
+      "personas": [],
+      "script_backed": false,
+      "path": "skills/init-rules"
+    },
+    {
+      "name": "iphone-mirroring",
+      "description": "\"Read and navigate iPhone Mirroring: state, screenshots, View menu; input goes via OpenCUA. Use for the iPhone from the Mac. Not for calls (phone-facetime).\"",
+      "version": "1.1.0",
+      "license": "MIT",
+      "tags": [
+        "macos",
+        "apple",
+        "iphone",
+        "iphone-mirroring",
+        "continuity",
+        "screenshot",
+        "automation",
+        "accessibility"
+      ],
+      "family": "macos",
+      "personas": [
+        "macos"
+      ],
+      "script_backed": true,
+      "path": "skills/iphone-mirroring"
+    },
+    {
       "name": "json-diff",
       "description": "Semantic diff between two JSON documents reported by JSON path \u2014 added, removed, changed with old/new values, recursing nested objects and comparing arrays positionally. Use when `diff` on JSON is useless (key reordering, formatting noise), for config drift checks, API response comparison, or CI gates on expected output.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "license": "MIT",
       "tags": [
         "json",
@@ -758,28 +984,65 @@
       ],
       "family": "backend",
       "personas": [
-        "backend"
+        "backend",
+        "data"
       ],
       "script_backed": true,
       "path": "skills/json-diff"
     },
     {
-      "name": "linus-level",
-      "description": "Set a 1.0-10.0 engineering working-mode dial - tunes agency, collaboration, assumption budget, decision ownership, questioning, verification, and security posture from fast prototype to maintainer-grade. Use when the user mentions \"Linus Level\", \"LL <n>\", asks to set rigor/strictness/maintainer mode, calibrate agent autonomy or coworker mode, or distinguishes prototype vs production / established-codebase / mission-critical work.",
-      "version": "1.0.0",
-      "license": "MIT (from rsoffer/linus-level-skill; see LICENSE.txt)",
+      "name": "kakao-messenger",
+      "description": "\"Read and reply to KakaoTalk (\uce74\ud1a1) through the signed-in Mac app. Use for KakaoTalk news or replying. Not for Slack (slack-messenger) or calls (phone-facetime).\"",
+      "version": "1.2.1",
+      "license": "MIT",
       "tags": [
-        "engineering-mode",
-        "rigor",
-        "autonomy",
-        "dial"
+        "kakaotalk",
+        "messaging",
+        "macos",
+        "chat"
+      ],
+      "family": "connectors",
+      "personas": [
+        "macos"
+      ],
+      "script_backed": false,
+      "path": "skills/kakao-messenger"
+    },
+    {
+      "name": "karpathy-prompt",
+      "description": "\"Write output a reader can verify without guessing: 80%-STE prose, format ladder. Use when writing reports or summaries. Not for skill authoring (create-skills).\"",
+      "version": "0.1.1",
+      "license": "MIT",
+      "tags": [
+        "writing",
+        "prompting",
+        "reports",
+        "clarity"
+      ],
+      "family": "creative",
+      "personas": [
+        "writing"
+      ],
+      "script_backed": false,
+      "path": "skills/karpathy-prompt"
+    },
+    {
+      "name": "loe",
+      "description": "\"Define LoE (Level of Expectation): observable outcomes, scope, and evidence of done. Use for acceptance criteria before work. Not for task plans (ulw-plan).\"",
+      "version": "0.1.2",
+      "license": "MIT",
+      "tags": [
+        "acceptance-criteria",
+        "planning",
+        "scope",
+        "requirements"
       ],
       "family": "process",
       "personas": [
-        "agentic"
+        "verification"
       ],
       "script_backed": false,
-      "path": "skills/linus-level"
+      "path": "skills/loe"
     },
     {
       "name": "log-analyzer",
@@ -796,75 +1059,75 @@
       "family": "backend",
       "personas": [
         "backend",
+        "data",
         "devops"
       ],
       "script_backed": true,
       "path": "skills/log-analyzer"
     },
     {
-      "name": "log-deviation",
-      "description": "Record a place where the code forced a deviation from the agreed plan. Use mid-implementation whenever reality contradicts the plan, or when the user says \"log this deviation\". The log feeds future planning and the merge quiz.",
-      "version": "1.0.0",
+      "name": "macos-settings",
+      "description": "\"Read macOS settings; set appearance, volume, Wi-Fi power; open Settings panes. Use for a Mac setting or pane. Not for health metrics (sys-health).\"",
+      "version": "1.0.2",
       "license": "MIT",
-      "tags": [],
-      "family": "process",
+      "tags": [
+        "macos",
+        "tahoe",
+        "system-settings",
+        "appearance",
+        "volume",
+        "wifi",
+        "bluetooth",
+        "battery"
+      ],
+      "family": "macos",
+      "personas": [
+        "macos"
+      ],
+      "script_backed": true,
+      "path": "skills/macos-settings"
+    },
+    {
+      "name": "max-build",
+      "description": "\"Self-contained highest-rigor all-in-one for any deliverable: uses full OmO tools & embedded skills (ulw-research, ultimate-browsing, QA/CI, Karpathy, visual/code/data), ships finished products, debates with evidence, and hunts optimizations. Use only as $max-build TASK.\"",
+      "version": "2.1.0",
+      "license": "MIT",
+      "tags": [
+        "orchestration",
+        "end-to-end",
+        "qa",
+        "research",
+        "omo",
+        "planning"
+      ],
+      "family": "orchestration",
       "personas": [
         "agentic"
       ],
       "script_backed": false,
-      "path": "skills/log-deviation"
+      "path": "skills/max-build"
     },
     {
-      "name": "lsp-setup",
-      "description": "\"Configure a Language Server (LSP) for a specific language so editor/agent tooling \u2014 diagnostics, go-to-definition, find-references, rename \u2014 works. Use when you need to: configure LSP, lsp setup, set up or install a language server, fix 'no LSP server configured' / 'server not installed', choose between servers (basedpyright vs pyright vs ty vs ruff), or wire .codex/lsp-client.json / .opencode/lsp.json. \uc5b8\uc5b4\uc11c\ubc84 \uc124\uc815. Routes by file extension to references/<language>/README.md for the exact builtin server, per-OS install commands (macOS/Linux/Windows), config snippets for both config files, initialization options, alternatives, and troubleshooting. Ships scripts: detect-lsp.ts (scan a project for languages + each server's install/config status) and verify-lsp.ts (run a real diagnostics roundtrip). Covers typescript, python, go, rust, c/c++, java, kotlin, c#/razor, swift, ruby, php, dart, elixir, zig, lua, bash, yaml, terraform, haskell, julia.\"",
-      "version": "1.0.0",
-      "license": "MIT (from oh-my-opencode / omo-ai)",
-      "tags": [
-        "lsp",
-        "language-server",
-        "diagnostics",
-        "tooling"
-      ],
-      "family": "power",
-      "personas": [
-        "backend",
-        "coding",
-        "devops"
-      ],
-      "script_backed": false,
-      "path": "skills/lsp-setup"
-    },
-    {
-      "name": "merge-quiz",
-      "description": "Pre-merge comprehension gate that quizzes the USER on the riskiest parts of the branch diff. Use before merging or opening a PR, or when the user says \"merge quiz\", \"am I ready to merge\", or \"quiz me on this diff\".",
-      "version": "1.0.0",
+      "name": "moffice",
+      "description": "\"Drive Word, Excel, and PowerPoint via AppleScript: read, edit, create, export PDF. Use for Office files on this Mac. Not for Notes (apple-suite).\"",
+      "version": "1.1.2",
       "license": "MIT",
-      "tags": [],
-      "family": "process",
-      "personas": [
-        "verification"
-      ],
-      "script_backed": false,
-      "path": "skills/merge-quiz"
-    },
-    {
-      "name": "nbj-write-clearly",
-      "description": "Drafts, revises, and audits reader-first technical and product documentation. Use when working on developer docs, procedures, release notes, technical explanations, help-center content, or UI copy where clarity, source fidelity, accessibility, or global readability matters. Do not auto-apply it to marketing, legal, academic, fictional, or personal writing unless the user explicitly requests this style.",
-      "version": "1.0.0",
-      "license": "MIT (from daniel-p-green/nbj-write-clearly; see LICENSE.txt)",
       "tags": [
-        "writing",
-        "documentation",
-        "style",
-        "clarity"
+        "macos",
+        "microsoft",
+        "office",
+        "word",
+        "excel",
+        "powerpoint",
+        "applescript",
+        "documents"
       ],
-      "family": "creative",
+      "family": "macos",
       "personas": [
-        "career",
-        "design"
+        "macos"
       ],
-      "script_backed": false,
-      "path": "skills/nbj-write-clearly"
+      "script_backed": true,
+      "path": "skills/moffice"
     },
     {
       "name": "net-probe",
@@ -884,6 +1147,62 @@
       "path": "skills/net-probe"
     },
     {
+      "name": "notion",
+      "description": "\"Look up answers in a configured Notion workspace via MCP or API. Use only for a requested Notion lookup with proven access. Not for Obsidian (obsidian-vault).\"",
+      "version": "1.1.0",
+      "license": "MIT",
+      "tags": [
+        "notion",
+        "knowledge-base",
+        "mcp",
+        "lookup"
+      ],
+      "family": "connectors",
+      "personas": [
+        "research"
+      ],
+      "script_backed": false,
+      "path": "skills/notion"
+    },
+    {
+      "name": "obsidian-vault",
+      "description": "\"Look up answers in the configured Obsidian vault when installed and readable. Use for a requested vault lookup. Not for Notion (notion) or note-taking.\"",
+      "version": "1.1.0",
+      "license": "MIT",
+      "tags": [
+        "obsidian",
+        "notes",
+        "knowledge-base",
+        "lookup"
+      ],
+      "family": "connectors",
+      "personas": [
+        "research"
+      ],
+      "script_backed": false,
+      "path": "skills/obsidian-vault"
+    },
+    {
+      "name": "omo-runner",
+      "description": "\"Offload long OmO runs to remote runners, pull results, set up the pool. Use when a long run starts or runners need setup. Not for fleet supervision (watcher).\"",
+      "version": "1.1.0",
+      "license": "MIT",
+      "tags": [
+        "offload",
+        "remote",
+        "proxmox",
+        "herdr",
+        "workflow",
+        "infra"
+      ],
+      "family": "orchestration",
+      "personas": [
+        "agentic"
+      ],
+      "script_backed": false,
+      "path": "skills/omo-runner"
+    },
+    {
       "name": "open-loops",
       "description": "Extracts the unresolved commitments, deferrals, decisions, and open questions from a conversation transcript into a small JSON ledger \u2014 so a different surface (a cron job, a trigger, a fresh session) can pick them up instead of dropping them. Use to hand off context across surfaces, or to gate a session/thread handoff on how much is left open.",
       "version": "1.0.0",
@@ -901,6 +1220,43 @@
       ],
       "script_backed": true,
       "path": "skills/open-loops"
+    },
+    {
+      "name": "optimize-omo-config",
+      "description": "\"Inventory real OmO model access and draft evidence-backed routing proposals. Use when asked to optimize model routing. Not for first-run setup (onboarding).\"",
+      "version": "1.0.2",
+      "license": "MIT",
+      "tags": [
+        "omo",
+        "model-routing",
+        "config",
+        "providers"
+      ],
+      "family": "orchestration",
+      "personas": [],
+      "script_backed": false,
+      "path": "skills/optimize-omo-config"
+    },
+    {
+      "name": "phone-facetime",
+      "description": "\"Phone and FaceTime calls: preview and open call URLs, read call state, hang up, mute, recents. Use for calls on the Mac. Not for Messages (apple-suite).\"",
+      "version": "1.0.2",
+      "license": "MIT",
+      "tags": [
+        "macos",
+        "apple",
+        "phone",
+        "facetime",
+        "calls",
+        "accessibility",
+        "contacts"
+      ],
+      "family": "macos",
+      "personas": [
+        "macos"
+      ],
+      "script_backed": true,
+      "path": "skills/phone-facetime"
     },
     {
       "name": "portfolio-audit",
@@ -924,17 +1280,35 @@
       "path": "skills/portfolio-audit"
     },
     {
+      "name": "preflight",
+      "description": "\"Build one project-specific pre-release gate script mapped to roadmap and Rules.md. Use when asked for a pre-live check. Not for code review (review-work).\"",
+      "version": "0.1.3",
+      "license": "MIT",
+      "tags": [
+        "release",
+        "gate",
+        "checks",
+        "qa"
+      ],
+      "family": "process",
+      "personas": [
+        "devops",
+        "qa",
+        "verification"
+      ],
+      "script_backed": false,
+      "path": "skills/preflight"
+    },
+    {
       "name": "pro-review",
-      "description": "\"Explicit second-opinion code review: scope the change set, hand a sized, hazard-filtered brief to ChatGPT Pro (default, through a pinned guarded browser transport) or to a real agent client (OmO, Claude, Codex) in its own Herdr pane, then machine-check the returned report and verify every finding locally. Use only when invoked as /pro-review, $pro-review, or /skill:pro-review.\"",
-      "version": "1.0.0",
+      "description": "\"Explicit GPT-6 Pro second-opinion code review through our Pro-checked ChatGPT transport: machine-checked report, local verification. Use only as /pro-review or $pro-review. Not for routine self-review, lint, or tests.\"",
+      "version": "2.0.0",
       "license": "MIT",
       "tags": [
         "review",
         "code-review",
         "chatgpt-pro",
         "second-opinion",
-        "herdr",
-        "agents",
         "verification"
       ],
       "family": "power",
@@ -944,6 +1318,42 @@
       ],
       "script_backed": false,
       "path": "skills/pro-review"
+    },
+    {
+      "name": "project-sessions",
+      "description": "\"Create isolated Herdr task checkouts and resume their OmO chats. Use for explicit new, list, or resume. Not for transcript search (coding-agent-sessions).\"",
+      "version": "0.3.0",
+      "license": "MIT",
+      "tags": [
+        "herdr",
+        "sessions",
+        "checkouts",
+        "omo",
+        "worktrees"
+      ],
+      "family": "orchestration",
+      "personas": [
+        "agentic"
+      ],
+      "script_backed": false,
+      "path": "skills/project-sessions"
+    },
+    {
+      "name": "prompt-builder",
+      "description": "\"Wrap a task in Q's work prompt: explore, ideal state, QA, quick tasks, goal, mass ulw. Use only as $prompt-builder TASK. Not for a plain loop (ulw-loop).\"",
+      "version": "1.2.1",
+      "license": "MIT",
+      "tags": [
+        "prompting",
+        "prompt-engineering",
+        "templates"
+      ],
+      "family": "orchestration",
+      "personas": [
+        "agentic"
+      ],
+      "script_backed": false,
+      "path": "skills/prompt-builder"
     },
     {
       "name": "proxmox-ve",
@@ -964,27 +1374,44 @@
       "path": "skills/proxmox-ve"
     },
     {
-      "name": "remove-ai-slops",
-      "description": "\"Remove AI-generated code smells (slop) from branch changes or an explicit file list. Locks behavior with regression tests FIRST, then runs categorized cleanup via parallel `deep` agents in batches of 5, then verifies with quality gates. Covers 10 slop categories including performance equivalences, excessive complexity (object annotations, if/elif variant chains), and oversized modules (250+ pure LOC with mandatory modular refactoring). MUST USE when the user asks to \\\"remove slop\\\", \\\"clean AI code\\\", \\\"deslop\\\", \\\"clean up AI-generated code\\\", \\\"remove AI slop\\\", or wants to clean up AI-generated patterns from recent changes. Triggers - \\\"remove ai slops\\\", \\\"clean ai code\\\", \\\"deslop\\\", \\\"cleanup AI generated\\\", \\\"remove AI slop\\\", \\\"clean up AI-generated code\\\", \\\"strip slop\\\", \\\"ai-slop cleanup\\\".\"",
-      "version": "1.0.0",
-      "license": "MIT (from oh-my-opencode / omo-ai)",
+      "name": "readme-init",
+      "description": "\"Create or refresh a README from what the repo contains: code, manifests, commands. Use for writing or fixing a README. Not for a cited overhaul (init-readme).\"",
+      "version": "1.1.0",
+      "license": "MIT",
       "tags": [
-        "refactor",
-        "code-quality",
-        "cleanup",
-        "ai-slop"
+        "readme",
+        "docs",
+        "documentation"
       ],
       "family": "power",
       "personas": [
-        "coding"
+        "writing"
       ],
       "script_backed": false,
-      "path": "skills/remove-ai-slops"
+      "path": "skills/readme-init"
+    },
+    {
+      "name": "reorient",
+      "description": "\"Recover project context from memory, sessions, Git, PRs into one journal. Use for reorient or a project recap. Not for session search (coding-agent-sessions).\"",
+      "version": "0.1.1",
+      "license": "MIT",
+      "tags": [
+        "context-recovery",
+        "memory",
+        "git",
+        "project-journal"
+      ],
+      "family": "orchestration",
+      "personas": [
+        "agentic"
+      ],
+      "script_backed": false,
+      "path": "skills/reorient"
     },
     {
       "name": "repo-audit",
       "description": "Structural health check for a git repository \u2014 LICENSE, README, tests, CI config, .gitignore, large tracked files, and stale merged branches (idle beyond a configurable window). Offline, stdlib + git CLI, deterministic. Use when inheriting a repo, before open-sourcing, or as a periodic hygiene gate across many repos.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "license": "MIT",
       "tags": [
         "git",
@@ -1061,7 +1488,7 @@
     {
       "name": "seo-audit",
       "description": "Scores on-page SEO for HTML files \u2014 title length, meta description, single h1, image alt text, canonical link, Open Graph tags, and html lang. Reads a saved HTML file or stdin (from curl), fully offline and deterministic, no Lighthouse or browser needed. Use before publishing any page, in CI on static builds, or when auditing a site without spinning up a browser.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "license": "MIT",
       "tags": [
         "seo",
@@ -1082,18 +1509,22 @@
     },
     {
       "name": "session-finder",
-      "description": "Detects and administers currently RUNNING AI agent sessions on this machine \u2014 Claude Code, Codex, OMO/Senpi, gjc, Hermes, OpenCode, aider, Cursor, Gemini CLI \u2014 at the process level. Status summary with client grouping and uptime, watch mode, and safe kill (SIGTERM only, validated to refuse non-agent PIDs). Complements session-handoff (which reads completed session logs) \u2014 this watches live processes.",
-      "version": "1.0.0",
+      "description": "\"List live coding-agent processes (Claude, Codex, OmO) as text or JSON, with safe kill. Use for live process checks. Not for transcripts (coding-agent-sessions).\"",
+      "version": "1.2.1",
       "license": "MIT",
       "tags": [
         "sessions",
         "processes",
         "monitoring",
         "admin",
-        "multi-agent"
+        "multi-agent",
+        "omo",
+        "macos"
       ],
-      "family": "other",
-      "personas": [],
+      "family": "orchestration",
+      "personas": [
+        "agentic"
+      ],
       "script_backed": true,
       "path": "skills/session-finder"
     },
@@ -1137,6 +1568,24 @@
       "path": "skills/session-rules"
     },
     {
+      "name": "side-hustle",
+      "description": "\"Plan lawful extra income: freelancing, bug bounty, hackathons. Use when asked to start or grow a no-capital side hustle. Not for tax advice (tax-advisor).\"",
+      "version": "1.1.0",
+      "license": "MIT",
+      "tags": [
+        "income",
+        "freelancing",
+        "bug-bounty",
+        "planning"
+      ],
+      "family": "other",
+      "personas": [
+        "career"
+      ],
+      "script_backed": false,
+      "path": "skills/side-hustle"
+    },
+    {
       "name": "skill-audit",
       "description": "Security-scans third-party agent skills before you trust them. A SKILL.md is executable authority \u2014 agents follow it with your credentials and filesystem. Detects prompt-injection patterns (instruction overrides, concealment directives), data-exfiltration signatures (sensitive paths + network sends), and dangerous script patterns (pipe-to-shell, eval-on-download) in any skills directory. Offline, deterministic, stdlib-only.",
       "version": "1.0.0",
@@ -1157,24 +1606,6 @@
       "path": "skills/skill-audit"
     },
     {
-      "name": "skill-creator",
-      "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.",
-      "version": "1.0.0",
-      "license": "Apache-2.0 (from anthropics/skills; see LICENSE.txt)",
-      "tags": [
-        "skills",
-        "authoring",
-        "evaluation",
-        "meta"
-      ],
-      "family": "power",
-      "personas": [
-        "agentic"
-      ],
-      "script_backed": true,
-      "path": "skills/skill-creator"
-    },
-    {
       "name": "skill-decay",
       "description": "Find declared-but-unused skills, tools, or plugins by cross-referencing an inventory (SKILL.md files or a name list) against real usage logs, and fail CI when the dead weight grows past a budget.",
       "version": "1.0.0",
@@ -1193,19 +1624,6 @@
       ],
       "script_backed": true,
       "path": "skills/skill-decay"
-    },
-    {
-      "name": "skill-optimizer",
-      "description": "\"Optimizer that refines and professionalizes AI agent skills through real usage \u2014 saves tokens, eliminates redundancy, and tightens instructions so skills cost less to run. Learns from mistakes, reviews quality, and improves over time. Observes skill execution in the current conversation, analyzes up to four sources (conversation friction, file diffs, user feedback, static diagnostic) plus accumulated lessons, and proposes concrete improvements to the target skill's SKILL.md. Works with Claude Code and compatible SKILL.md-based agent frameworks. Use after executing any skill: `/skill-optimizer [name]` or `/skill-optimizer` to auto-detect. `--review` processes accumulated lessons.\"",
-      "version": "",
-      "license": "MIT",
-      "tags": [],
-      "family": "power",
-      "personas": [
-        "agentic"
-      ],
-      "script_backed": false,
-      "path": "skills/skill-optimizer"
     },
     {
       "name": "skill-picker",
@@ -1244,9 +1662,25 @@
       "path": "skills/skill-sync"
     },
     {
+      "name": "slack-messenger",
+      "description": "\"Read and reply to Slack from the CLI or desktop app. Use for Slack news or messaging; send only after approval. Not for Discord (discord-messenger).\"",
+      "version": "1.2.0",
+      "license": "MIT",
+      "tags": [
+        "slack",
+        "messaging",
+        "chat",
+        "cli"
+      ],
+      "family": "connectors",
+      "personas": [],
+      "script_backed": false,
+      "path": "skills/slack-messenger"
+    },
+    {
       "name": "social-research",
       "description": "Finds and extracts content from social platforms \u2014 X/Twitter posts and profiles via the public syndication API (no auth), Threads posts via public web endpoints where available, and Reddit/HN/Bluesky via official public APIs. Uses the ultimate-browsing Tier 1.5 platform-native readers with honest documentation of what each platform exposes without a login. Use for researching people, topics, or conversations on social platforms without a browser.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "license": "MIT",
       "tags": [
         "social",
@@ -1260,6 +1694,26 @@
       "personas": [],
       "script_backed": false,
       "path": "skills/social-research"
+    },
+    {
+      "name": "spotify",
+      "description": "\"Read and control the Spotify desktop app: playback, player volume, shuffle, repeat, search. Use for Spotify on this Mac. Not for TV.app (apple-tv).\"",
+      "version": "1.0.4",
+      "license": "MIT",
+      "tags": [
+        "macos",
+        "spotify",
+        "music",
+        "playback",
+        "applescript",
+        "automation"
+      ],
+      "family": "macos",
+      "personas": [
+        "macos"
+      ],
+      "script_backed": true,
+      "path": "skills/spotify"
     },
     {
       "name": "subscription-audit",
@@ -1282,79 +1736,40 @@
     },
     {
       "name": "sys-health",
-      "description": "One-shot machine health report \u2014 disk usage, memory pressure, load average, top CPU processes, and zombie count \u2014 from native system interfaces (statvfs, sysctl/vm_stat, ps), no psutil or vendor binaries. Budgets turn it into a gate that alerts when disk or memory pressure crosses a threshold.",
-      "version": "1.0.0",
+      "description": "\"Point-in-time Mac health: disk, memory, load, top CPU, zombies. Use when a Mac looks starved or before heavy jobs. Not for process inventory (session-finder).\"",
+      "version": "1.0.3",
       "license": "MIT",
       "tags": [
         "sysops",
         "monitoring",
         "disk",
         "memory",
-        "processes"
+        "processes",
+        "macos"
       ],
       "family": "backend",
-      "personas": [],
+      "personas": [
+        "devops"
+      ],
       "script_backed": true,
       "path": "skills/sys-health"
     },
     {
-      "name": "systematic-debugging",
-      "description": "Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes",
-      "version": "1.0.0",
-      "license": "MIT (from obra/superpowers; see LICENSE.txt)",
+      "name": "tv-detox",
+      "description": "\"Clean up a slow Android/Google TV over adb; optionally add TV Detox launcher. Use for debloating or ad removal. Not for non-Android TVs or TV.app (apple-tv).\"",
+      "version": "1.1.0",
+      "license": "MIT",
       "tags": [
-        "debugging",
-        "root-cause",
-        "process",
-        "quality"
+        "android-tv",
+        "google-tv",
+        "adb",
+        "debloat",
+        "launcher"
       ],
-      "family": "process",
-      "personas": [
-        "backend",
-        "coding",
-        "verification"
-      ],
+      "family": "other",
+      "personas": [],
       "script_backed": false,
-      "path": "skills/systematic-debugging"
-    },
-    {
-      "name": "test-driven-development",
-      "description": "Use when implementing any feature or bugfix, before writing implementation code",
-      "version": "1.0.0",
-      "license": "MIT (from obra/superpowers; see LICENSE.txt)",
-      "tags": [
-        "tdd",
-        "testing",
-        "process",
-        "quality"
-      ],
-      "family": "process",
-      "personas": [
-        "backend",
-        "coding",
-        "verification"
-      ],
-      "script_backed": false,
-      "path": "skills/test-driven-development"
-    },
-    {
-      "name": "ultimate-browsing",
-      "description": "\"Escalation skill for blocked or hard-to-reach web access \u2014 load it when a normal browse/fetch is blocked (WAF, 403, Cloudflare, JS-only render, login-gated, or a platform a generic fetcher cannot read). Tiered router: TIER 1 insane-search (headless extraction + WAF bypass via curl_cffi TLS impersonation, yt-dlp, Jina Reader, public APIs, Playwright real-Chrome fallback); TIER 1.5 agent-reach (platform-native readers for Chinese and social platforms: Xiaohongshu, Douyin, Weibo, Bilibili, V2EX, WeChat, plus Twitter/Reddit/LinkedIn/GitHub); TIER 2 Chrome stealth (CloakBrowser stealth Chromium + agent-browser CDP for clicks, forms, screenshots, video, cookie login). Triggers: blocked site, bypass bot detection, cloudflare/WAF bypass, scrape, stealth browser, import cookies, fill form, screenshot, play youtube, xiaohongshu, douyin, weibo, bilibili, v2ex, wechat article, podcast transcript. NOT for simple searches (use web-search) or plain fetches (use webfetch).\"",
-      "version": "1.0.0",
-      "license": "See ATTRIBUTION.md (from oh-my-opencode / omo-ai)",
-      "tags": [
-        "browsing",
-        "waf-bypass",
-        "scraping",
-        "extraction",
-        "research"
-      ],
-      "family": "power",
-      "personas": [
-        "research"
-      ],
-      "script_backed": true,
-      "path": "skills/ultimate-browsing"
+      "path": "skills/tv-detox"
     },
     {
       "name": "usage-audit",
@@ -1377,93 +1792,40 @@
       "path": "skills/usage-audit"
     },
     {
-      "name": "using-git-worktrees",
-      "description": "Use when starting feature work that needs isolation from current workspace or before executing implementation plans - ensures an isolated workspace exists via native tools or git worktree fallback",
-      "version": "1.0.0",
-      "license": "MIT (from obra/superpowers; see LICENSE.txt)",
+      "name": "vaultwarden",
+      "description": "\"Unlock a Vaultwarden or Bitwarden vault with the bw CLI and use saved logins to sign in. Use when a login needs a stored credential. Not for browsing (browser).\"",
+      "version": "1.1.0",
+      "license": "MIT",
       "tags": [
-        "git",
-        "worktrees",
-        "workflow",
-        "parallel"
+        "vaultwarden",
+        "bitwarden",
+        "passwords",
+        "login",
+        "credentials"
       ],
-      "family": "process",
+      "family": "connectors",
       "personas": [],
       "script_backed": false,
-      "path": "skills/using-git-worktrees"
+      "path": "skills/vaultwarden"
     },
     {
-      "name": "verification-before-completion",
-      "description": "Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always",
-      "version": "1.0.0",
-      "license": "MIT (from obra/superpowers; see LICENSE.txt)",
-      "tags": [
-        "verification",
-        "evidence",
-        "process",
-        "quality"
-      ],
-      "family": "process",
-      "personas": [
-        "qa",
-        "verification"
-      ],
-      "script_backed": false,
-      "path": "skills/verification-before-completion"
-    },
-    {
-      "name": "verify-ref",
-      "description": "Comprehension gate before porting, copying, or adapting an existing implementation. Proves understanding of the reference code before any new code is written. Use when the task is \"port X\", \"copy how Y does it\", \"adapt Z\", or reimplementing existing behavior.",
-      "version": "1.0.0",
+      "name": "watcher",
+      "description": "\"Supervise delegated OmO work while the user is away; fixes ship as CI-watched PRs. Use when continuation is delegated. Not for process lists (session-finder).\"",
+      "version": "2.1.0",
       "license": "MIT",
-      "tags": [],
-      "family": "process",
-      "personas": [
-        "verification"
-      ],
-      "script_backed": false,
-      "path": "skills/verify-ref"
-    },
-    {
-      "name": "visual-qa",
-      "description": "Visual quality assurance workflow for web pages, terminal UIs, and generated documents \u2014 capture screenshots, compare against baselines, and run a structured good/bad verdict. Companion to webapp-testing: where webapp-testing drives the browser, visual-qa defines what to look for and how to judge it. Use after building or changing any UI, or when asked whether a page, component, or TUI looks right.",
-      "version": "1.0.0",
-      "license": "MIT (from oh-my-opencode / omo-ai; adapted)",
       "tags": [
-        "visual-qa",
-        "screenshot",
-        "ui",
-        "design",
-        "qa"
+        "supervision",
+        "omo",
+        "delegation",
+        "pull-requests",
+        "ci"
       ],
-      "family": "creative",
+      "family": "orchestration",
       "personas": [
-        "design",
-        "frontend",
-        "qa"
-      ],
-      "script_backed": false,
-      "path": "skills/visual-qa"
-    },
-    {
-      "name": "webapp-testing",
-      "description": "Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.",
-      "version": "1.0.0",
-      "license": "Apache-2.0 (derived from anthropics/skills; see LICENSE.txt)",
-      "tags": [
-        "testing",
-        "playwright",
-        "browser",
-        "qa",
-        "screenshots"
-      ],
-      "family": "creative",
-      "personas": [
-        "frontend",
-        "qa"
+        "agentic"
       ],
       "script_backed": true,
-      "path": "skills/webapp-testing"
+      "path": "skills/watcher"
     }
   ]
 }

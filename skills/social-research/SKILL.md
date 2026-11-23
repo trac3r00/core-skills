@@ -2,7 +2,7 @@
 name: social-research
 description: Finds and extracts content from social platforms — X/Twitter posts and profiles via the public syndication API (no auth), Threads posts via public web endpoints where available, and Reddit/HN/Bluesky via official public APIs. Uses the ultimate-browsing Tier 1.5 platform-native readers with honest documentation of what each platform exposes without a login. Use for researching people, topics, or conversations on social platforms without a browser.
 when_to_use: "Find what X said about Y", "search Twitter for Z", "pull this person's recent posts", "what's on HN about this". NOT a posting tool (read-only) and NOT a login bypass — content behind auth walls is documented as inaccessible, never scraped around.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 metadata:
   agentskills:
@@ -66,5 +66,4 @@ only legitimate path.
 
 ## Pairs with
 
-`ultimate-browsing` (escalate to Tier 2 stealth browser when public
-endpoints are insufficient and you have legitimate access).
+`net-probe` (check reachability when a public endpoint stops answering).

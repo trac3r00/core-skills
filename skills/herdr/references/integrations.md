@@ -19,6 +19,9 @@ Each integration script starts by checking it is actually inside a Herdr pane
 (`HERDR_ENV=1`, `HERDR_PANE_ID`, `HERDR_SOCKET_PATH`) and exits silently otherwise, so
 running the same client outside Herdr is unaffected.
 
+Herdr.app (herdr-core) panes set `HC_TERMINAL_ID` instead, so these scripts stay
+silent there. Agents report to Herdr.app with OSC 7501 records; see `hc --skill`.
+
 ## Managing integrations
 
 ```bash

@@ -1,0 +1,394 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omo-mods.invalid/skills/optimize-omo-config/snapshot-v1.schema.json",
+  "title": "OmO configuration optimizer snapshot v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "capturedAt",
+    "host",
+    "policy",
+    "nativeContract",
+    "existingConfig",
+    "candidates"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["omoVersion", "engineVersion"],
+      "properties": {
+        "omoVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "engineVersion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "maxAccessAgeMs",
+        "maxEvidenceAgeMs",
+        "minimumTrials",
+        "minimumQualityScore",
+        "qualityTolerance",
+        "modelsPerTarget",
+        "allowedBillingModes"
+      ],
+      "properties": {
+        "version": {
+          "const": "quality-cost-access/1"
+        },
+        "maxAccessAgeMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxEvidenceAgeMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minimumTrials": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minimumQualityScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "qualityTolerance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "modelsPerTarget": {
+          "description": "Maximum chain length, not a minimum required candidate count.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "allowedBillingModes": {
+          "type": "array",
+          "items": {
+            "enum": ["subscription", "paid_api"]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "maxCostUsdPerRun": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "nativeContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "block",
+        "modelArrayField",
+        "legacyModelFields",
+        "targetInventoryComplete",
+        "targets"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "block": {
+          "enum": ["[native]", "[senpi]"]
+        },
+        "modelArrayField": {
+          "const": "models"
+        },
+        "legacyModelFields": {
+          "type": "array",
+          "items": {
+            "enum": ["model", "fallback_models"]
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "targetInventoryComplete": {
+          "const": true
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/target"
+          }
+        }
+      }
+    },
+    "existingConfig": {
+      "type": "object"
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/candidate"
+      }
+    }
+  },
+  "$defs": {
+    "sourceRef": {
+      "type": "string",
+      "pattern": "^(https?://[^\\s]+|local:[A-Za-z0-9._:-]+)$"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "name", "comparisonSet", "requires"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(category|agent):[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "kind": {
+          "enum": ["category", "agent"]
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "comparisonSet": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "enum": ["tool_calling", "image_input", "video_input", "reasoning"]
+          },
+          "uniqueItems": true
+        },
+        "minContextWindowTokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minOutputTokens": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "providerStatus",
+        "modelStatus",
+        "authMethod",
+        "billingMode",
+        "balanceStatus",
+        "providerCheckedAt",
+        "modelCheckedAt",
+        "sourceRef"
+      ],
+      "properties": {
+        "providerStatus": {
+          "enum": ["ready", "unavailable", "unknown"]
+        },
+        "modelStatus": {
+          "enum": ["ready", "unavailable", "unknown"]
+        },
+        "authMethod": {
+          "enum": ["oauth", "api_key", "unknown"]
+        },
+        "billingMode": {
+          "enum": ["subscription", "paid_api", "unknown"]
+        },
+        "balanceStatus": {
+          "enum": ["sufficient", "insufficient", "unknown", "not_applicable"]
+        },
+        "providerCheckedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "modelCheckedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "balanceCheckedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        }
+      }
+    },
+    "capabilityEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "sourceRef"],
+      "properties": {
+        "name": {
+          "enum": ["tool_calling", "image_input", "video_input", "reasoning"]
+        },
+        "status": {
+          "enum": ["supported", "unsupported", "unknown"]
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim", "sourceRef"],
+      "properties": {
+        "claim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetId",
+        "comparisonSet",
+        "score",
+        "trials",
+        "observedAt",
+        "evidenceKind",
+        "sourceRef",
+        "strengths",
+        "weaknesses"
+      ],
+      "properties": {
+        "targetId": {
+          "type": "string"
+        },
+        "comparisonSet": {
+          "type": "string",
+          "minLength": 1
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "trials": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidenceKind": {
+          "enum": [
+            "official-benchmark",
+            "independent-benchmark",
+            "local-evaluation"
+          ]
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "strengths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "weaknesses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "usdPerRun": {
+          "type": ["number", "null"],
+          "minimum": 0
+        },
+        "costObservedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "costSourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "provider",
+        "modelId",
+        "access",
+        "modelFactsSourceRef",
+        "contextWindowTokens",
+        "maxOutputTokens",
+        "capabilities",
+        "evaluations"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/[^\\s]+$"
+        },
+        "provider": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "modelId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "access": {
+          "$ref": "#/$defs/access"
+        },
+        "modelFactsSourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "contextWindowTokens": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "maxOutputTokens": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capabilityEvidence"
+          }
+        },
+        "evaluations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evaluation"
+          }
+        }
+      }
+    }
+  }
+}

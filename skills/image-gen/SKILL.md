@@ -2,7 +2,7 @@
 name: image-gen
 description: Image generation routing and prompt discipline — which provider for which job (gpt-image for text rendering and design fidelity, grok for fast iteration and photoreal people), how to structure prompts that survive the model (subject, composition, style, lighting, negatives), and the honest constraints of each provider installed on this machine. Use before generating any image so the first generation is closer to the brief.
 when_to_use: Any image generation task — hero images, product shots, avatars, textures, slide art. NOT a provider itself (it routes to what's installed: the harness's generate_image tool, codex image features, grok via groken) and NOT a post-processing tool.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 metadata:
   agentskills:
@@ -49,5 +49,5 @@ it actually heard. One strong revision beats five blind regenerations.
 
 ## Pairs with
 
-`design` (the taste standard the image is judged against),
+`3d-design` (when the asset is a 3D scene rather than a flat image),
 `higgsfield-generate` (heavier video/3D/audio generation when installed).

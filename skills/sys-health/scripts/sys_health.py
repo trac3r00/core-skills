@@ -1,140 +1,244 @@
 #!/usr/bin/env python3
-"""sys-health: one-shot machine health report — disk, memory, load, top processes.
-
-The "is this box okay" check an agent should run before blaming code. Reads
-df, sysctl/ps on macOS, /proc on Linux; no psutil, no vendor binaries.
-Budgets turn it into a gate: alert (and exit 1) when disk or memory pressure
-crosses a threshold.
-
-Usage:
-    sys_health.py [--json]
-    sys_health.py --max-disk-pct 90 --max-mem-pct 85
-    sys_health.py --top 5
-
-Exit codes: 0 healthy, 1 over budget, 2 usage error.
-"""
+"""Report point-in-time disk, memory, load, and process health."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import math
+import os
+import re
 import subprocess
-import sys
+from typing import TYPE_CHECKING, Literal, TypedDict
 
-# macOS ships sysctl in /usr/sbin, which is often missing from agent PATHs.
-SYSCTL = "/usr/sbin/sysctl" if sys.platform == "darwin" else "sysctl"
+if TYPE_CHECKING:  # Python 3.11+ at runtime; annotations stay strings here.
+    from typing import NotRequired
 
 
-def _disk(path: str) -> dict:
-    st = __import__("os").statvfs(path)
-    total = st.f_blocks * st.f_frsize
-    free = st.f_bavail * st.f_frsize
+class DiskReport(TypedDict):
+    mount: str
+    total_gb: float
+    used_gb: float
+    used_pct: float
+
+
+class MemoryReport(TypedDict):
+    total_gb: float
+    used_pct: float
+
+
+class LoadReport(TypedDict):
+    m1: float
+    m5: float
+    m15: float
+
+
+class ProcessReport(TypedDict):
+    pid: int
+    cpu_pct: float
+    mem_pct: float
+    command: str
+
+
+class HealthReport(TypedDict):
+    disk: DiskReport | None
+    memory: MemoryReport | None
+    load: LoadReport | None
+    top_processes: list[ProcessReport] | None
+    zombies: int | None
+    alerts: list[str]
+    status: NotRequired[Literal["unavailable"]]
+
+
+def _disk(path: str) -> DiskReport | None:
+    try:
+        stat = os.statvfs(path)
+    except OSError:
+        return None
+    total = stat.f_blocks * stat.f_frsize
+    free = stat.f_bavail * stat.f_frsize
     used = total - free
-    return {"mount": path, "total_gb": round(total / 1e9, 1),
-            "used_gb": round(used / 1e9, 1),
-            "used_pct": round(used / total * 100, 1) if total else 0.0}
+    return {
+        "mount": path,
+        "total_gb": round(total / 1e9, 1),
+        "used_gb": round(used / 1e9, 1),
+        "used_pct": round(used / total * 100, 1) if total else 0.0,
+    }
 
 
-def _memory() -> dict:
+def _memory() -> MemoryReport | None:
     try:
-        p = subprocess.run([SYSCTL, "-n", "hw.memsize"],
-                           capture_output=True, text=True)
-        total = int(p.stdout.strip())
-        vm = subprocess.run(["vm_stat"], capture_output=True, text=True).stdout
-        page = 16384
-        free = inactive = 0
+        size = subprocess.run(
+            ["sysctl", "-n", "hw.memsize"], capture_output=True, text=True, check=False,
+        )
+        if size.returncode:
+            raise OSError
+        total = int(size.stdout.strip())
+        result = subprocess.run(["vm_stat"], capture_output=True, text=True, check=False)
+        if result.returncode:
+            raise OSError
+        vm = result.stdout
+        page = int(re.findall(r"page size of ([1-9]\d*) bytes", vm)[0])
+        pages: dict[str, int] = {}
         for line in vm.splitlines():
-            if "Pages free" in line:
-                free = int(line.split(":")[1].strip().rstrip(".")) * page
-            elif "Pages inactive" in line:
-                inactive = int(line.split(":")[1].strip().rstrip(".")) * page
-        avail = free + inactive
-        used = total - avail
-        return {"total_gb": round(total / 1e9, 1),
-                "used_pct": round(used / total * 100, 1)}
-    except (OSError, ValueError):
+            key, _, value = line.partition(":")
+            if key in ("Pages free", "Pages inactive"):
+                pages[key] = int(value.strip().rstrip("."))
+        free = pages["Pages free"] * page
+        inactive = pages["Pages inactive"] * page
+        if total <= 0:
+            raise ValueError
+        used = total - free - inactive
+        return {"total_gb": round(total / 1e9, 1), "used_pct": round(used / total * 100, 1)}
+    except (OSError, ValueError, IndexError, KeyError):
         try:
-            info = {}
-            for line in open("/proc/meminfo"):
-                k, _, v = line.partition(":")
-                info[k] = int(v.strip().split()[0]) * 1024
+            info: dict[str, int] = {}
+            with open("/proc/meminfo") as stream:
+                for line in stream:
+                    key, _, value = line.partition(":")
+                    info[key] = int(value.strip().split()[0]) * 1024
             total = info["MemTotal"]
-            avail = info.get("MemAvailable", info.get("MemFree", 0))
-            return {"total_gb": round(total / 1e9, 1),
-                    "used_pct": round((total - avail) / total * 100, 1)}
-        except (OSError, ValueError, KeyError):
-            return {"total_gb": 0.0, "used_pct": 0.0}
+            available = info["MemAvailable"] if "MemAvailable" in info else info["MemFree"]
+            if total <= 0:
+                raise ValueError
+            return {"total_gb": round(total / 1e9, 1), "used_pct": round((total - available) / total * 100, 1)}
+        except (KeyError, OSError, ValueError, IndexError):
+            return None
 
 
-def _load() -> dict:
+def _load() -> LoadReport | None:
     try:
-        p = subprocess.run([SYSCTL, "-n", "vm.loadavg"],
-                           capture_output=True, text=True)
-        parts = p.stdout.strip().strip("{}").split()
-        return {"1m": float(parts[0]), "5m": float(parts[1]), "15m": float(parts[2])}
+        result = subprocess.run(
+            ["sysctl", "-n", "vm.loadavg"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode:
+            raise OSError
+        output = result.stdout.strip().strip("{}")
+        values = output.split()
+        return {"m1": float(values[0]), "m5": float(values[1]), "m15": float(values[2])}
     except (OSError, ValueError, IndexError):
         try:
-            a, b, c, *_ = open("/proc/loadavg").read().split()
-            return {"1m": float(a), "5m": float(b), "15m": float(c)}
-        except (OSError, ValueError):
-            return {"1m": 0.0, "5m": 0.0, "15m": 0.0}
+            with open("/proc/loadavg") as stream:
+                values = stream.read().split()
+            return {"m1": float(values[0]), "m5": float(values[1]), "m15": float(values[2])}
+        except (OSError, ValueError, IndexError):
+            return None
 
 
-def _top_processes(n: int) -> list[dict]:
-    # BSD ps (macOS) sorts by CPU with -r; procps (Linux) reads -r as
-    # "running only" and needs an explicit sort key instead.
-    sort = ["-r"] if sys.platform == "darwin" else ["--sort=-pcpu"]
-    p = subprocess.run(["ps", "-eo", "pid,pcpu,pmem,comm", *sort],
-                       capture_output=True, text=True)
-    out = []
-    for line in p.stdout.splitlines()[1 : n + 1]:
-        parts = line.split(None, 3)
-        if len(parts) == 4:
-            out.append({"pid": int(parts[0]), "cpu_pct": float(parts[1]),
-                        "mem_pct": float(parts[2]), "command": parts[3][:60]})
-    return out
+def _top_processes(count: int) -> list[ProcessReport] | None:
+    try:
+        result = subprocess.run(
+            ["ps", "-eo", "pid,pcpu,pmem,comm", "-r"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode:
+            return None
+        lines = result.stdout.splitlines()
+        if not lines or lines[0].split()[0] != "PID":
+            return None
+        processes: list[ProcessReport] = []
+        for line in lines[1 : count + 1]:
+            parts = line.split(None, 3)
+            processes.append({
+                "pid": int(parts[0]),
+                "cpu_pct": float(parts[1]),
+                "mem_pct": float(parts[2]),
+                "command": parts[3][:80],
+            })
+        return processes
+    except (OSError, ValueError, IndexError):
+        return None
 
 
-def _zombies() -> int:
-    p = subprocess.run(["ps", "-eo", "stat"], capture_output=True, text=True)
-    return sum(1 for line in p.stdout.splitlines() if line.strip().startswith("Z"))
+def _zombies() -> int | None:
+    try:
+        result = subprocess.run(
+            ["ps", "-eo", "stat"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode or not result.stdout.splitlines() or result.stdout.splitlines()[0].strip() != "STAT":
+            return None
+        return sum(line.strip().startswith("Z") for line in result.stdout.splitlines()[1:])
+    except OSError:
+        return None
+
+
+def _finite_pct(value: str) -> float:
+    """A threshold that can actually be compared; NaN or infinity would silently disable the check."""
+    number = float(value)
+    if not math.isfinite(number):
+        raise argparse.ArgumentTypeError(f"threshold must be a finite number: {value}")
+    return number
+
+
+def _process_count(value: str) -> int:
+    """A non-negative row count; a negative value would silently change slice semantics."""
+    count = int(value)
+    if count < 0:
+        raise argparse.ArgumentTypeError(f"--top must be zero or more: {value}")
+    return count
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--max-disk-pct", type=float, default=None)
-    ap.add_argument("--max-mem-pct", type=float, default=None)
-    ap.add_argument("--top", type=int, default=5)
-    ap.add_argument("--json", action="store_true")
-    args = ap.parse_args(argv)
+    parser = argparse.ArgumentParser(description=(__doc__ or "sys-health").splitlines()[0])
+    parser.add_argument("--max-disk-pct", type=_finite_pct, default=None)
+    parser.add_argument("--max-mem-pct", type=_finite_pct, default=None)
+    parser.add_argument("--top", type=_process_count, default=5)
+    parser.add_argument("--json", action="store_true")
+    args = parser.parse_args(argv)
 
-    report = {
-        "disk": _disk("/"),
-        "memory": _memory(),
-        "load": _load(),
-        "top_processes": _top_processes(args.top),
-        "zombies": _zombies(),
+    disk = _disk("/")
+    memory = _memory()
+    load = _load()
+    top_processes = _top_processes(args.top)
+    zombies = _zombies()
+    alerts: list[str] = []
+    if disk is None:
+        alerts.append("disk unavailable")
+    elif args.max_disk_pct is not None and disk["used_pct"] > args.max_disk_pct:
+        alerts.append(f"disk {disk['used_pct']}% > {args.max_disk_pct}%")
+    if memory is None:
+        alerts.append("memory unavailable")
+    elif args.max_mem_pct is not None and memory["used_pct"] > args.max_mem_pct:
+        alerts.append(f"memory {memory['used_pct']}% > {args.max_mem_pct}%")
+    if load is None:
+        alerts.append("load unavailable")
+    if top_processes is None:
+        alerts.append("processes unavailable")
+    if zombies is None:
+        alerts.append("zombies unavailable")
+    elif zombies:
+        alerts.append(f"{zombies} zombie process(es)")
+    report: HealthReport = {
+        "disk": disk,
+        "memory": memory,
+        "load": load,
+        "top_processes": top_processes,
+        "zombies": zombies,
+        "alerts": alerts,
     }
-    alerts = []
-    if args.max_disk_pct is not None and report["disk"]["used_pct"] > args.max_disk_pct:
-        alerts.append(f"disk {report['disk']['used_pct']}% > {args.max_disk_pct}%")
-    if args.max_mem_pct is not None and report["memory"]["used_pct"] > args.max_mem_pct:
-        alerts.append(f"memory {report['memory']['used_pct']}% > {args.max_mem_pct}%")
-    if report["zombies"]:
-        alerts.append(f"{report['zombies']} zombie process(es)")
-    report["alerts"] = alerts
+    unavailable = any(value is None for value in (disk, memory, load, top_processes, zombies))
+    if unavailable:
+        report["status"] = "unavailable"
 
     if args.json:
         print(json.dumps(report, indent=2))
     else:
-        print(f"disk: {report['disk']['used_pct']}% of {report['disk']['total_gb']}GB")
-        print(f"memory: {report['memory']['used_pct']}% of {report['memory']['total_gb']}GB")
-        print(f"load: {report['load']['1m']} {report['load']['5m']} {report['load']['15m']}")
-        for proc in report["top_processes"]:
-            print(f"  {proc['pid']:>7} {proc['cpu_pct']:>5.1f}%cpu {proc['command']}")
-        for a in alerts:
-            print(f"ALERT: {a}")
-    return 1 if alerts else 0
+        print(f"disk: {disk['used_pct']}% of {disk['total_gb']}GB" if disk else "disk: unavailable")
+        print(f"memory: {memory['used_pct']}% of {memory['total_gb']}GB" if memory else "memory: unavailable")
+        print(f"load: {load['m1']} {load['m5']} {load['m15']}" if load else "load: unavailable")
+        for process in top_processes or []:
+            print(f"  {process['pid']:>7} {process['cpu_pct']:>5.1f}%cpu {process['command']}")
+        for alert in alerts:
+            print(f"ALERT: {alert}")
+    return 2 if unavailable else 1 if alerts else 0
 
 
 if __name__ == "__main__":

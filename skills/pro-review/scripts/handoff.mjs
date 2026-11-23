@@ -15,7 +15,6 @@ export const SECTIONS = ["# OmO Pro Review", "## Verdict", "## Scope", "## Findi
 export const VERDICTS = ["APPROVE", "REQUEST_CHANGES", "INCONCLUSIVE"];
 export const SEVERITIES = ["critical", "high", "medium", "low", "info"];
 export const PRO_MODEL = "gpt-6-pro";
-const ENGINES = ["pro", "pane", "headless", "subagent"];
 const IDENTITY = "OmO Pro Review";
 
 // Path policy. It is a bounded filter on path shape, not a secret scanner:
@@ -35,7 +34,7 @@ const SECRET = [
   new RegExp("(^|/)(credentials?|secrets?|tokens?|sessions?|cookies?|auth)([-_.][^/]*)?\\." + DATA_EXT + BACKUP + "$", "i"),
   new RegExp("(^|/)sessions?/(.*/)?[^/]*\\." + DATA_EXT + BACKUP + "$", "i"),
   /(^|\/)session\.log$/i, /(^|\/)[^/]*\.session$/i, /\.keychain(-db)?$/i,
-  /(^|\/)\.(ssh|aws|gnupg|kube|docker|oracle|azure|gcloud|codex|claude)(\/|$)/i,
+  /(^|\/)\.(ssh|aws|gnupg|kube|docker|oracle|pro-review|azure|gcloud|codex|claude)(\/|$)/i,
   /(^|\/)\.[a-z_]*_history$/i,
 ];
 const SKIP_DIRS = new Set(["node_modules", ".git", "dist", "build", "coverage", ".next", ".cache", "vendor", ".pro-review"]);
@@ -351,11 +350,33 @@ function briefText(index, manifest) {
     "",
     toolUse
       ? "You are an independent reviewer. Inspect the files below with your own tools."
-      : "You are an independent reviewer. The files listed below are attached to this",
+      : "You are an independent reviewer. The files listed below are included with this",
     toolUse
       ? "Create only the report file named below; modify nothing else, and do not read outside the trusted root."
-      : "message as one text bundle (each file starts with a \"===== FILE: <path> =====\" line); read them directly. You cannot run commands and cannot write files.",
+      : "message as a zip archive, and pasted in full when they fit (each pasted file starts with a \"===== FILE: <path> =====\" line). Read all of it before concluding. You cannot run commands on the author's machine and cannot write files there.",
     "",
+    ...(toolUse ? [] : [
+      "Context boundary: you have no access to this machine, this repository, earlier",
+      "conversations, or the agent session that produced this request. Everything you may",
+      "judge is in this message. Never assume the content of code you cannot see; when a",
+      "judgment depends on something absent, state it under ## Limits as a concrete question",
+      "(what is missing, why it matters, what answer would change the verdict).",
+      ...(manifest.scope.passes.length > 1 ? ["Other passes are reviewed in separate chats; do not guess their contents."] : []),
+      "",
+      "Working rules for this chat:",
+      "- Answer in this one reply. Do not ask clarifying questions first, do not wait for",
+      "  confirmation, and do not split the report across messages. If the material is",
+      "  insufficient, still return the full report with verdict INCONCLUSIVE.",
+      "- Use your own Python sandbox on the attached zip whenever it makes a finding more",
+      "  certain: unzip it, list the tree, search across files, and run the code, tests or a",
+      "  minimal reproduction when the runtime allows. List each such check under ## Checks run",
+      "  with the command and what it showed; say plainly when something could not be run.",
+      "- Do not browse the web or use plugins, apps or connectors (GitHub, drives) for this",
+      "  code: none of them hold this version of it.",
+      "- Only the text of your reply is saved. Images, canvases or files you produce are not;",
+      "  if one clarifies a finding, also state its conclusion in the report text.",
+      "",
+    ]),
     "Trusted root: " + manifest.repo,
     "Never open .env files, private keys, credential stores, token files, or session",
     "logs. If you encounter them, note the path and move on without printing contents.",
@@ -393,6 +414,10 @@ function briefText(index, manifest) {
     "- Prioritise reproducible defects over style or speculative cleanup.",
     "- For each finding give severity, path:line, the failing input or state, the",
     "  causal explanation, the impact, and the smallest correct fix.",
+    "- Severity: critical = data loss, security breach or crash on a normal path; high =",
+    "  wrong result on a reachable path; medium = edge case or missing guard with real",
+    "  impact; low = minor defect; info = observation, no fix needed.",
+    "- Cite only lines you actually read in the files above; never invent a path or line.",
     "- Separate confirmed defects from risks that need more evidence.",
     "- Say so plainly when there are no actionable findings, and state residual limits.",
     "- Do not claim to have run a command you did not run.",
@@ -413,9 +438,11 @@ function briefText(index, manifest) {
     "Fill every cell; location is path:line; escape a literal pipe as \\|; severity is one of: " + SEVERITIES.join(", ") + ".",
     "Never put example findings rows or section headings inside code blocks, quotes, lists or comments; describe examples in prose.",
     "The findings table is the only table allowed in the report: present scope, closure status and anything else as lists or prose.",
+    "Code fences (```) must start at column 0 and never sit inside a list item, quote or table: under ## Checks run write each check as a",
+    "short paragraph, then put its command and output in a column-0 fence directly below it. Indented fences make the report unreadable here.",
     "With nothing actionable, write the line \"No confirmed findings.\" instead of the table.",
     "Use one of these verdicts under ## Verdict: " + VERDICTS.join(", ") + ".",
-    "End the report with this exact marker line:",
+    "End the report with this exact marker line, and write it nowhere else:",
     marker,
     "",
     toolUse
@@ -494,16 +521,10 @@ function prepareOut(out, force, rootReal) {
 const writeNew = (path, text) => writeFileSync(path, text, { flag: "wx", mode: 0o600 });
 
 function resolveEngine(flags) {
-  const client = flags.client;
-  if (flags.engine !== undefined && !ENGINES.includes(flags.engine)) throw new UsageError("--engine must be one of: " + ENGINES.join(", "));
-  const mode = flags.engine ?? (client && client !== "chatgpt-pro" ? "pane" : "pro");
-  if (mode === "pro") {
-    if (client && client !== "chatgpt-pro") throw new UsageError("the pro engine only drives chatgpt-pro; use --engine pane|headless|subagent for --client " + client);
-    if (flags.model && flags.model !== PRO_MODEL) throw new UsageError("the pro engine is pinned to " + PRO_MODEL + "; --model " + flags.model + " would not be sent");
-    return { client: "chatgpt-pro", mode, provider: "chatgpt-pro", transport: "oracle-0.21.1-browser", model: PRO_MODEL };
-  }
-  if (client === "chatgpt-pro") throw new UsageError("chatgpt-pro is only reachable through --engine pro");
-  return { client: client ?? "omo", mode, provider: client ?? "omo", transport: "client", ...(flags.model ? { model: flags.model } : {}) };
+  if (flags.engine !== undefined && flags.engine !== "pro") throw new UsageError("pro-review requires --engine pro; no client-engine fallback is allowed");
+  if (flags.client !== undefined && flags.client !== "chatgpt-pro") throw new UsageError("pro-review requires --client chatgpt-pro; no client fallback is allowed");
+  if (flags.model !== undefined && flags.model !== PRO_MODEL) throw new UsageError("pro-review requires --model " + PRO_MODEL);
+  return { client: "chatgpt-pro", mode: "pro", provider: "chatgpt-pro", transport: "omo-chatgpt-transport-1", model: PRO_MODEL };
 }
 
 function commandPlan(parsed) {

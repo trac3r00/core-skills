@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleIdentifier</key><string>dev.omo-mods.spotify-compile-fixture</string>
+  <key>CFBundleName</key><string>SpotifyCompileFixture</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>NSAppleScriptEnabled</key><true/>
+  <key>OSAScriptingDefinition</key><string>Spotify.sdef</string>
+</dict>
+</plist>

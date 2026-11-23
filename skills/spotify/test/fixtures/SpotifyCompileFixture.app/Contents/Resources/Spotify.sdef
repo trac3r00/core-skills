@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
+<!-- Only the Spotify terminology used by STATUS_BODY. No application code is shipped or executed. -->
+<dictionary title="Spotify status compile fixture">
+  <suite name="Spotify Suite" code="spfy">
+    <enumeration name="player state value" code="ePlS">
+      <enumerator name="stopped" code="kPSS"/>
+      <enumerator name="playing" code="kPSP"/>
+      <enumerator name="paused" code="kPSp"/>
+    </enumeration>
+    <class name="application" code="capp">
+      <property name="current track" code="pTrk" type="track" access="r"/>
+      <property name="player state" code="pPlS" type="player state value" access="r"/>
+      <property name="player position" code="pPos" type="real"/>
+      <property name="sound volume" code="pVol" type="integer"/>
+      <property name="shuffling" code="pShu" type="boolean"/>
+      <property name="repeating" code="pRep" type="boolean"/>
+    </class>
+    <class name="track" code="spTr" plural="tracks">
+      <property name="name" code="pnam" type="text" access="r"/>
+      <property name="artist" code="pArt" type="text" access="r"/>
+      <property name="album" code="pAlb" type="text" access="r"/>
+      <property name="duration" code="pDur" type="integer" access="r"/>
+      <property name="spotify url" code="spur" type="text"/>
+    </class>
+  </suite>
+</dictionary>

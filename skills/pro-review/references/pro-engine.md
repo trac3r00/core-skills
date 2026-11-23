@@ -1,125 +1,252 @@
 # The Pro engine (ChatGPT Pro)
 
-This is the default engine: it reaches the **web-only ChatGPT Pro tier** that has
-no API, using a pinned browser transport under our own guard and report
-contract. It is the only engine that can honestly claim a Pro review.
+This is the default engine. It reaches the **web-only ChatGPT Pro tier**, which has
+no API, through our own browser transport, our report contract, and our two-stage
+Pro proof. It is the only engine that can honestly claim a Pro review.
 
 ## Pieces
 
 | piece | role |
 | --- | --- |
-| `scripts/pro-engine.mjs` | builds (`plan`) or runs (`run`) one guarded invocation for a brief and a report path |
-| `scripts/oracle-guard.mjs` | refuses unsafe authentication sources, validates the pinned transport, and fixes the Pro model + effort |
-| pinned transport | `@steipete/oracle@0.21.1`, resolved from `PRO_REVIEW_ORACLE_CLI`, then the npx cache, then the global npm root; the skill never installs it |
+| `scripts/pro-engine.mjs` | `plan` shows one run's shape; `run` sends a verified brief and publishes the reply only with Pro evidence; `recover` finishes a run whose CLI died |
+| `scripts/chatgpt-transport.mjs` | our own zero-dependency transport (forked from Oracle's approach, no Oracle code): the default Chromium browser on a dedicated profile, over the DevTools protocol (Node 24's built-in WebSocket); `login`, `check`, `status` |
+| `scripts/handoff.mjs` | scope, hashes, brief and report contract (unchanged by the transport) |
 
-Install it once with `npx -y @steipete/oracle@0.21.1 --version` (that populates the
-npx cache), or point `PRO_REVIEW_ORACLE_CLI` at an absolute
-`.../@steipete/oracle/dist/bin/oracle-cli.js`. Node.js 24 or newer is required.
+There is nothing to install: Node.js 24+ and a Chromium-based browser are the only
+requirements. The transport uses the user's **default browser** (macOS LaunchServices, the
+Windows https UserChoice, or `xdg-settings`) when it is Chromium-based (Chrome, Brave,
+Edge, Vivaldi, ...); a non-Chromium default such as Safari or Firefox stops the run with
+nothing sent. `PRO_REVIEW_BROWSER` (or the older `PRO_REVIEW_CHROME`) may name an
+executable explicitly (absolute path). Google Chrome is used only when no default browser
+can be determined at all. The launch
+flags and the overall page flow were adapted from steipete/oracle (MIT); no Oracle code
+or package is used at run time.
 
-The transport is pinned and version-checked: if the installed package is not
-`0.21.1` at the expected path, the guard refuses before anything runs. Our own
-code owns scope selection, the brief, the report contract, verification, and the
-cookie/credential boundary - the package only drives the browser.
+## Model and effort: checkable, Pro only
 
-## What the guard refuses (exit 2, nothing sent)
+```sh
+node "$PRO_REVIEW_DIR"/scripts/chatgpt-transport.mjs check            # read only: exit 0 Pro, 3 not Pro, 5 signed out
+node "$PRO_REVIEW_DIR"/scripts/chatgpt-transport.mjs check --select   # switch the picker to GPT-6 Pro, then re-read it
+# prints one line, e.g. {"ok":true,"model":"GPT-6","effort":"Pro, 5 of 5.","status":"already-selected","plan":"pro"}; --json for full evidence
+```
 
-- Cookie payloads or export files from the environment (`ORACLE_BROWSER_COOKIES_JSON`,
-  `..._FILE`, including empty values), from `.env`, from a config file, or passed
-  as CLI options.
-- Automatic cookie exports found in the effective transport home.
-- A transport home or browser profile that differs from the pinned paths.
-- Cookie synchronisation, copied profiles, attached or remote browsers.
-- Saved-session recovery whose metadata does not prove manual login with cookie
-  sync disabled, or whose saved request carries cookie configuration.
-- Any option outside the documented allowlist (including `restart` and follow-ups).
+ChatGPT's picker (October 2026) is one menu with two controls: model rows (`GPT-6`,
+`GPT-5.6 Sol`, ...) and a five-step effort slider, **Instant, Medium, High, Extra High,
+Pro**. `check` opens a new chat, opens the menu, reads the checked model row and the
+slider's own status line (for example `Pro, 5 of 5.`), closes the menu, and prints JSON:
+`ok`, `label` (`GPT-6 + Pro`), `status` (`already-selected` / `switched` / `not-pro`),
+the plan, the model, the effort step, and every model row. It never types or sends.
+`--select` checks the GPT-6 row, steps the slider right with the arrow keys until it
+reads Pro (recording every label it passes), and re-reads the menu after reopening it.
+The choice persists in the profile.
 
-- A project `.env` that sets runtime or browser controls (`NODE_OPTIONS`,
-  `LD_*`/`DYLD_*`, `PATH`, `CHROME_PATH`, `ORACLE_CLIENT_FACTORY`, remote-debug
-  ports, and similar). Other project dotenv keys outside the transport's `ORACLE_`
-  namespace are dropped, never promoted into the transport environment.
+A review is published only when **both** proofs hold:
 
-Refusal is a setup blocker: do not bypass the guard, delete cookies, or edit the
-user authentication configuration to get past it.
+1. **Picker, before send.** `run` reads the picker before typing and again right before
+   the send click. Only the GPT-6 row checked at effort `Pro` passes (or a legacy single
+   button reading exactly `GPT-6 Pro`); Extra High, another model, or a generic `Pro` chip
+   fails. If it is not Pro, the transport runs the `--select` steps once and re-reads;
+   still not Pro means exit 3 with nothing sent.
+2. **Server, after the answer.** The answer is read from ChatGPT's own conversation
+   record (`/backend-api/conversation/<id>`, called inside the page so the access token
+   never leaves the browser). The *answering* model's `model_slug` must be GPT-6 Pro
+   (`gpt-6-pro`, `gpt-6.1-pro`, ...) or GPT-6 with effort `pro`; a *requested* Pro slug
+   proves nothing and is ignored. Anything else: exit 3, the reply kept privately and
+   never published as a Pro review.
+3. **Integrity.** The same record's first user turn must be the approved prompt: typed
+   text equal to it with only whitespace runs collapsed (word and line boundaries still
+   count), or exactly one big paste whose stored copy, downloaded inside the page, has the
+   prompt's exact SHA-256. Every upload (the zip) must be stored byte for byte as approved,
+   by downloaded SHA-256, with no extra attachment. A session without
+   these recorded hashes is never verified. Any mismatch is refused like a non-Pro answer.
+   The composer is also re-checked right before the send click.
+
+The session file records both: `preSubmit` (picker evidence with timestamps and the rows
+seen) and `server` (`modelSlug`, `requestedModelSlug`, `effort`, `pro`).
+
+## Sign-in (one time)
+
+```sh
+node "$PRO_REVIEW_DIR"/scripts/chatgpt-transport.mjs login
+```
+
+opens a **plain** window of the same default browser on the dedicated profile `~/.pro-review/browser-profile` at the
+ChatGPT login page. Sign in there, then quit it (Cmd+Q). It has no DevTools port on
+purpose: Google refuses to sign in to a browser that exposes remote debugging ("This
+browser or app may not be secure"). Later runs reuse the sign-in. A run on a signed-out
+profile stops before typing with exit 5.
+
+**Key store, never mix.** Chrome encrypts a profile's cookies with either the macOS
+Keychain or a mock key store, and silently discards every cookie it cannot decrypt (which
+signs ChatGPT out). The transport keeps Oracle's rule: a profile with a
+`.pro-review-native-keychain-v1` or `.oracle-native-keychain-v1` marker, or a brand-new
+profile, uses the Keychain; every other existing profile keeps
+`--use-mock-keychain --password-store=basic`. `login` and `run` use the same choice. Never
+open the profile with a plain Chrome launch of your own.
+
+## Window
+
+A run never takes the screen. Background runs start Chrome **headless**
+(`--headless=new`) on the dedicated profile: there is no window and no Dock icon, so macOS
+has nothing to bring to the front and no reason to switch Spaces. Each page opens on
+`about:blank`, gets a normal Chrome user agent and a desktop viewport, and only then
+loads ChatGPT, so the site never sees "HeadlessChrome" (workers included). The DevTools
+Runtime domain is never enabled (a known bot signal), and a Cloudflare check gets 45 s to
+pass by itself before the run asks a person to clear it in `login`. It runs with focus emulation, so
+trusted clicks, the paste and file uploads behave as in a visible window. Verified: two
+`check` runs and a full review with five uploads ran while a sampler recorded the
+frontmost app every 0.2 s with its pid; the review's Chrome never became frontmost.
+(Launching a windowed Chrome with `open -g` was tried first and once came to the front.)
+Only `--keep-browser` and the plain `login` window show a window, because a person has to
+act there. `--offscreen` is accepted for compatibility and changes nothing.
+
+A Chrome that already holds the profile is reused through its DevTools endpoint, never
+killed. One without an endpoint (for example the plain `login` window) makes the run
+refuse with nothing sent: ask the person to quit it.
 
 ## Upload integrity
 
-`plan` records a SHA-256 for every scoped file. Before sending, `run` re-checks
-each manifest entry (plain repository-relative path, canonical containment, the
-shared path policy, regular file, unchanged hash) and uploads a private snapshot
-of exactly those bytes as one text bundle (`===== FILE: <path> =====` per file, so
-no repository filename reaches the transport's glob-expanding file interface),
-removed after the run (also on a failed snapshot). The transport writes the reply
-to a private file; `run` then publishes it to the report path with exclusive
-create, so a pre-existing entry or link there is refused, never followed.
-Project dotenv promotes only a short allowlist of `ORACLE_` tuning settings, and
-prompt-mutating config (`promptSuffix`, `promptPrefix`, `systemPrompt`) is refused.
-Every submission is pinned to a new chat (`--chatgpt-url https://chatgpt.com/`); a
-configured `chatgptUrl`/`url` destination is refused, and the transport file-size
-limit is set from the real bundle size. The
-brief is bound the same way: it must be the regular file beside the manifest with
-the hash the plan recorded, and `plan` output shows only its length and hash. A
-file or brief that changed or became a link since planning is refused: re-plan
-to approve the new content.
+`plan` records a SHA-256 for every scoped file. Before sending, `run` re-checks each
+manifest entry (plain repository-relative path, canonical containment, the shared path
+policy, regular file, unchanged hash). Every manifest pass uploads the verified scope as **one zip** (`<repo>-pass<N>.zip`,
+paths relative to the trusted root). The zip is written without dependencies and with
+fixed timestamps, so the same files always give the same SHA-256. It goes through the
+composer's general file input (the other inputs accept only images), and the send waits
+until its tile shows, no upload progress remains and Send is enabled. The zip is what
+lets Pro work like a reviewer with the project in hand: its Python sandbox can unzip it,
+list the tree, search across files and run tests or a reproduction.
 
-Transport discovery runs npm from your home directory and ignores candidates
-inside the working project, so a reviewed repository's `.npmrc` cannot choose
-the executable transport.
+Up to 600 KB, the same files are also **pasted in full**, so Pro reads every line in
+context as well. Typing was unusable here: CDP `insertText` took 18 s for 30k characters
+and stalled beyond 60k, while a paste lands 100k characters in under a second. ChatGPT
+keeps a short paste as text and turns a long one into a "Pasted text" chip (a
+`big_paste` attachment that Pro reads in full; a live test with random markers at the
+start, middle and end of 150k characters came back exact). Larger passes, or passes with
+a file that is not valid UTF-8, go zip-only, and the prompt tells Pro to read every file
+from the zip.
 
-## Pinned selection
+Every prompt ends with **What you received (and nothing else)**: the zip's name, file
+count and hash, whether the files are also pasted, and that Pro cannot see the user's
+machine, the rest of the repository, git history, GitHub, any connected app or earlier
+conversations, so missing context must become a question under `## Limits`. A
+`--prompt-only` run says that nothing at all is attached. ChatGPT's record then has to
+agree (see Integrity above): the pasted or typed prompt, and every upload, are
+downloaded and hash-checked, with no extra attachment allowed. A stale draft (text or
+chip) is cleared or refused before anything is sent.
 
-Every run is pinned to `--engine browser --model gpt-6-pro
---browser-model-strategy select --browser-thinking-time pro`, with manual login,
-no cookie sync, archiving off, and one bundled text attachment. The guard builds
-those flags itself, so a caller cannot weaken them.
+## Any file ChatGPT takes: `--attach`
 
-## First login
+`--attach PATH` (repeatable, on manifest and `--prompt-only` runs) uploads a file as it is:
+a screenshot, a PDF, a Word, Excel or PowerPoint file, a CSV, audio, a zip. Before Chrome
+starts, each file is checked against OpenAI's upload limits:
 
-The dedicated profile is `~/.oracle/browser-profile`. Add `--keep-browser`
-(the engine flag; the guard forwards it as `--browser-keep-browser`) on the first live run so the window stays open for sign-in, then drop the flag.
-A `needs_login` failure happens before submission, so retrying after sign-in is
-correct; a failure after possible submission means recovering the saved session,
-not resubmitting.
+| kind | extensions | limit |
+| --- | --- | --- |
+| image (seen directly) | png, jpg, jpeg, gif, webp | 20 MB |
+| spreadsheet | csv, tsv, xlsx, xls | about 50 MB |
+| presentation | pptx | 512 MB |
+| document | pdf, docx, txt, md, rtf, html, json, xml, yaml | 512 MB |
+| audio (paid plans) | wav, mp3, ogg, flac, aac, m4a, webm, mp4, pcm | 512 MB |
+| archive | zip | 512 MB |
+| any other file (opened in the sandbox) | | 512 MB |
 
-## Commands
+The first bytes must match the extension (a renamed file is refused). Empty files, links,
+secret-shaped paths, executables and disk images, two uploads with the same name, and more
+than 10 uploads in one message (the scope zip counts) are refused with nothing sent. The
+delivery note lists every upload with its kind, size and hash and says how to use it
+(look at an image, read every slide, load a spreadsheet in Python, transcribe audio).
+ChatGPT's stored copy of every upload is downloaded after the answer and must match by
+SHA-256; images are stored unchanged. A live run with a PNG, PDF, DOCX and CSV came back
+with the code hidden in each, including the one that existed only as image pixels.
+ChatGPT renames a repeated upload name ("name(1).png"), and the upload check accepts that.
+Uploads count toward ChatGPT's limit of 80 files every 3 hours.
+
+## Results: the report and every file Pro made
+
+The report is the final answer to the run's own first message. Files Pro creates in its
+sandbox (a patch, a fixed file, a chart) are found from ChatGPT's own record: the save
+receipts in its tool output, the `content_references` of type `file` on its answers (a
+file saved to the user's Library, linked as `chatgpt.com/library?file_id=…`), generated
+images, and `sandbox:` links. Each is fetched by its file id with the page's own session. They are downloaded and saved
+beside the published report in `<report>.files/`, with a `MANIFEST.json` of names,
+sources and SHA-256. Names are reduced to safe basenames and nothing is overwritten; a
+link with no saved copy is listed as not downloadable. Files are saved only together with
+a published, Pro-proven report. The brief tells Pro to save and link any file it makes.
+The default wait is 45 minutes (Pro with sandbox tools can run long); `recover` finishes
+anything longer, with the same proofs and file download.
+
+## Sessions and recovery
+
+Each run writes `~/.pro-review/sessions/<id>/meta.json` at every stage (`starting`,
+`submitting`, `submitted` with the conversation URL, `answered`, `pending`, `failed`) and
+prints `session <id>` at the start. If the CLI dies after the send, the answer keeps being
+generated by ChatGPT:
 
 ```sh
-# Build the exact invocation from a handoff manifest (no browser, no prompt):
-node "$PRO_REVIEW_DIR"/scripts/pro-engine.mjs plan \
-  --manifest "<manifest dir>/manifest.json" [--pass 1]
-
-# Send it to ChatGPT Pro and save the reply as the report:
-node "$PRO_REVIEW_DIR"/scripts/pro-engine.mjs run \
-  --manifest "<manifest dir>/manifest.json" [--pass 1] [--keep-browser]
-
-# Recovery, through the same guard (oracleCli is the path `plan` prints):
-node "$PRO_REVIEW_DIR"/scripts/oracle-guard.mjs \
-  --oracle-cli "<oracleCli from plan>" \
-  --oracle-home "$HOME/.oracle" --profile-dir "$HOME/.oracle/browser-profile" \
-  status --hours 72
+node "$PRO_REVIEW_DIR"/scripts/pro-engine.mjs recover \
+  --session "<id>" --manifest "<manifest dir>/manifest.json" [--pass N] [--timeout 5m]
 ```
 
-The manifest supplies the brief, the report path, and every scoped file, which the
-engine uploads as an attachment. A brief-only invocation is refused unless
-`--prompt-only` says the review genuinely needs no files, and a manifest whose
-engine mode is not `pro` is refused too. `--keep-browser` is forwarded for
-first-time sign-in.
+reopens the conversation, reads the server record, and publishes under the same proofs.
+The report is always the reply to the conversation's first user turn, so a later turn or
+branch never replaces it. A send whose conversation id was not captured is found among
+conversations created since the send whose first turn is exactly this prompt. Exit 4 means
+not finished (or not visible) yet; run it again later. `recover` refuses a session that a
+different brief started, one without a brief binding, and one that never reached ChatGPT.
+It never resubmits.
 
-Run `run` through the background command monitor with a deadline that covers the
-20-minute response allowance, and wait for the report file rather than for
-console text. A Pro answer usually takes 10-15 minutes.
+## Commands and exit codes
+
+```sh
+node "$PRO_REVIEW_DIR"/scripts/pro-engine.mjs plan --manifest "<manifest dir>/manifest.json" [--pass 1]
+node "$PRO_REVIEW_DIR"/scripts/pro-engine.mjs run  --manifest "<manifest dir>/manifest.json" [--pass 1] [--keep-browser] [--timeout 20m]
+node "$PRO_REVIEW_DIR"/scripts/chatgpt-transport.mjs status "<session id>"
+```
+
+| exit | meaning |
+| --- | --- |
+| 0 | report published with both Pro proofs |
+| 2 | refused before sending (scope, paths, existing report, profile held) |
+| 3 | not Pro: nothing sent (picker), or reply kept unpublished (server) |
+| 4 | sent, answer not finished, or the browser/session went away while waiting: `recover` later |
+| 5 | a person is needed first: profile signed out, or a Cloudflare browser check; both are solved in the plain `login` window |
+| 1 | transport failure, or ChatGPT ended the answer with an error or partial completion; the message says whether anything was sent |
+
+The wait polls ChatGPT's record every 3 s for the first minute, then every 10 s, with one
+request per poll (the in-page token is cached). Every DevTools call and in-page request has
+its own deadline, so a stalled browser or network cannot outlive `--timeout` (1 s to 6 h).
+A run closes its own tab. A windowed Chrome is closed only by the run that launched it; a
+headless one (always a background run's) is closed by whichever run finishes last, once
+only blank or `chrome://` tabs remain, and any helper process it leaves behind is ended
+with its process group. A lost browser, an expired session, a
+failed answer, or a Cloudflare check that starts mid-wait (three polls in a row answered
+with a 403 page) ends the wait at once instead of at the deadline. Clear the check in the
+`login` window, then `recover`: the answer keeps going on ChatGPT's side. If Pro cannot be selected
+because its effort step is locked (the Pro usage limit), the refusal says so and lists
+the steps the slider reached.
+
+Run `run` through the background command monitor with a deadline longer than its
+`--timeout` (default 45m), and wait for the report file rather than for console text.
+A Pro answer usually takes 10-15 minutes.
 
 ## Evidence
 
-Verified on the author's machine (the suites are not shipped with the skill):
+On 2026-10-27 the transport was verified live on the signed-in Pro profile (plan `pro`):
 
-- Guard boundary suite: 28/28, including a clean preview that reaches the real
-  pinned transport and preserves the Pro selection.
-- Engine wiring suite: 5/5.
-- The last live Pro review run (session `pro-review-lease-race-closure`) returned
-  an APPROVE verdict on the runtime repair under review at the time.
+- `check` read `GPT-6 + Instant (1 of 5)` (exit 3), and `check --select` stepped the slider
+  Instant, Medium, High, Extra High, Pro and re-read `GPT-6 + Pro (5 of 5)`. A fresh launch
+  read `already-selected`.
+- `run --prompt-only` (session `pro-review-6969ec`) passed the picker gate, was sent, and
+  ChatGPT recorded the answer as `model_slug: gpt-6-pro`. It was published with exit 0, and
+  `recover` on the same session republished it. A session that never sent was refused
+  (exit 2).
+- An attachment upload (`bundle.txt`) became ready and enabled Send without being sent;
+  attachments do not survive into the next chat's draft.
 
 ## Limits
 
-Selection evidence (the picker showed `Latest` + `Pro`) is not independent proof
-of the backend that served an answer. The transport is a third-party package: an
-upgrade can break it, which is why the version is pinned and checked.
+The picker and the server's `model_slug` are ChatGPT's own statements, not an independent
+attestation of the hardware that served the answer. If ChatGPT renames its picker rows or
+moves the composer, the gate fails closed (exit 3 or a timeout, nothing sent). Update
+`SELECTORS` / `PRO_LABEL` in `chatgpt-transport.mjs` after a live `check`, never by
+loosening the server check.

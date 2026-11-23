@@ -1,24 +1,25 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "agent-skills",
-  "description": "66 agent skills across eight families: deterministic guards, interop, security, backend/deploy, domains, engineering process, power tools, and creative/frontend workflows, including audited Proxmox VE MCP administration.",
+  "name": "core-skills",
+  "description": "83 core skills by trac3r00 for any SKILL.md-reading AI client, across eleven families: deterministic guards, interop, security, backend/deploy, engineering process, creative, power tools, agent orchestration (OmO, Herdr), macOS automation, and connectors (Slack, Discord, KakaoTalk, Notion, Obsidian, Vaultwarden).",
   "owner": {
     "name": "trac3r00"
   },
   "plugins": [
     {
-      "name": "agent-skills",
-      "description": "66 agent skills across eight families: guards, interop, security, backend/dev workflows, domains, process discipline, creative, and power tools, including audited Proxmox VE MCP administration",
-      "version": "2.9.0",
+      "name": "core-skills",
+      "description": "83 core skills by trac3r00 for any SKILL.md-reading AI client, across eleven families: deterministic guards, interop, security, backend/deploy, engineering process, creative, power tools, agent orchestration (OmO, Herdr), macOS automation, and connectors (Slack, Discord, KakaoTalk, Notion, Obsidian, Vaultwarden).",
+      "version": "1.0.0",
       "author": {
         "name": "trac3r00"
       },
       "source": "./",
       "category": "productivity",
-      "homepage": "https://github.com/trac3r00/agent-skills",
+      "homepage": "https://github.com/trac3r00/core-skills",
       "tags": [
         "agent-memory",
         "apple",
+        "automation",
         "backend",
         "ci-gate",
         "code-review",
@@ -32,7 +33,12 @@
         "gate-graph",
         "generative-art",
         "hallucination",
+        "herdr",
         "interop",
+        "macos",
+        "messaging",
+        "omo",
+        "orchestration",
         "personal-finance",
         "playwright",
         "process",
@@ -50,5 +56,5 @@
       ]
     }
   ],
-  "version": "2.9.0"
+  "version": "1.0.0"
 }

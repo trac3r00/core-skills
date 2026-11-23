@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "provider": "pve",
+  "pveHost": "pve",
+  "template": "/BigData/tmp-clone/vzdump-lxc-180-2026_10_14-23_51_18.tar.zst",
+  "tokenBroker": "~/.local/share/omo-token-broker/push.ts",
+  "runners": [
+    { "name": "omo-runner-01", "host": "omo-runner-01", "ip": "10.10.0.181", "user": "doldori", "vmid": 181, "cores": 8, "memGb": 16 },
+    { "name": "omo-runner-02", "host": "omo-runner-02", "ip": "10.10.0.183", "user": "doldori", "vmid": 183, "cores": 8, "memGb": 16 },
+    { "name": "omo-runner-03", "host": "omo-runner-03", "ip": "10.10.0.185", "user": "doldori", "vmid": 185, "cores": 8, "memGb": 16 }
+  ],
+  "heavy": {
+    "minMinutes": 20,
+    "maxParallelLocal": 3,
+    "workflows": ["mass-ulw", "ulw-research", "ulw-loop", "hyperplan"]
+  }
+}

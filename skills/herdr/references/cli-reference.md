@@ -1,6 +1,6 @@
 # Herdr CLI reference
 
-Complete flag-level reference for `herdr 0.9.1` (protocol 22). The installed binary is the
+Complete flag-level reference, written against `herdr 0.9.1` (protocol 22); spot-checked against 0.9.5 on 2026-11-08 (`pane`, `agent`, `api`, `notification show`, `pane wait-output`, `agent wait`, `agent prompt`).  Note: `pane wait-output --source` accepts only `visible|recent|recent-unwrapped`. The installed binary is the
 authority: `herdr --help`, `herdr <group> --help`, `herdr <group> <sub> --help`.
 Anything with `[OPTIONS]` also accepts the global selectors below.
 

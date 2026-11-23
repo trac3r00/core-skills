@@ -1,0 +1,47 @@
+#!/bin/bash
+# Full-suite gate for a bare repo on the private CI box.
+# Install: ln -sf /srv/ci/pre-receive /srv/ci/<repo>.git/hooks/pre-receive
+# Each pushed commit is exported clean, installed, and checked; a failure
+# rejects the push, so remote branches only ever point at green commits.
+# Env: CI_TIMEOUT seconds per commit (default 1800). Logs: ~/ci-logs/.
+set -uo pipefail
+export PATH="$HOME/.bun/bin:$PATH"
+zero=0000000000000000000000000000000000000000
+repo=$(basename "$PWD" .git)
+logs="$HOME/ci-logs"
+mkdir -p "$logs"
+exec 9>"$logs/.lock"
+flock 9
+
+run() {
+  git archive "$1" | tar -x -C "$2" || return 1
+  # The quarantine and GIT_DIR exports were needed for the export only; tests must not see this repo.
+  unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_COMMON_DIR GIT_PREFIX GIT_QUARANTINE_PATH
+  cd "$2" || return 1
+  [ -f package.json ] || { echo "ci: no package.json"; return 1; }
+  if [ -f bun.lock ] || [ -f bun.lockb ]; then bun install --frozen-lockfile; else bun install; fi || return 1
+  if bun -e 'process.exit(require("./package.json").scripts?.check ? 0 : 1)'; then
+    bun run check
+  else
+    bun check --no-script && bun test
+  fi
+}
+
+status=0
+while read -r old new ref; do
+  [ "$new" = "$zero" ] && continue
+  dir=$(mktemp -d)
+  log="$logs/$repo-${new:0:12}.log"
+  start=$(date +%s)
+  timeout "${CI_TIMEOUT:-1800}" bash -c "$(declare -f run); run $new $dir" 2>&1 | tee "$log"
+  rc=${PIPESTATUS[0]}
+  rm -rf "$dir"
+  secs=$(( $(date +%s) - start ))
+  if [ "$rc" -eq 0 ]; then
+    echo "ci: PASS $ref ${new:0:12} in ${secs}s (log $log)"
+  else
+    echo "ci: FAIL $ref ${new:0:12} exit $rc in ${secs}s (log $log)"
+    status=1
+  fi
+done
+exit $status

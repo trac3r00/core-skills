@@ -1,44 +1,47 @@
 ---
 name: session-finder
-description: Detects and administers currently RUNNING AI agent sessions on this machine — Claude Code, Codex, OMO/Senpi, gjc, Hermes, OpenCode, aider, Cursor, Gemini CLI — at the process level. Status summary with client grouping and uptime, watch mode, and safe kill (SIGTERM only, validated to refuse non-agent PIDs). Complements session-handoff (which reads completed session logs) — this watches live processes.
-when_to_use: "How many agents are running right now?", "which client is that runaway process?", "kill the stuck Claude session", or admin/monitoring workflows over multiple agent clients. NOT a session log reader (session-handoff) or a process manager for non-agent processes.
-version: 1.0.0
+description: "List live coding-agent processes (Claude, Codex, OmO) as text or JSON, with safe kill. Use for live process checks. Not for transcripts (coding-agent-sessions)."
+version: 1.2.1
 license: MIT
+when_to_use: "Use when the user asks which coding agents are running, which client owns a process, whether an OmO host is alive, or to inspect a stuck live agent. For past sessions or transcript history, use OmO's native coding-agent-sessions skill instead; this skill does not read transcripts."
 metadata:
   agentskills:
-    tags: [sessions, processes, monitoring, admin, multi-agent]
+    tags: [sessions, processes, monitoring, admin, multi-agent, omo, macos]
 ---
 
 # Session Finder
 
-Which AI agents are running right now, and what do you do about them.
-
-## Commands
+This is the OmO-compatible live-session tool. It scans the process table
+without assuming GNU-only flags, recognizes OmO/Senpi launchers and hosts,
+and reports a stable JSON shape suitable for scripts.
 
 ```bash
-python3 scripts/session_finder.py              # one-shot scan
-python3 scripts/session_finder.py --json       # machine-readable
-python3 scripts/session_finder.py --watch 10   # re-scan every 10s
-python3 scripts/session_finder.py --kill 85819 # SIGTERM (validated)
+python3 scripts/session_finder.py
+python3 scripts/session_finder.py --json
+python3 scripts/session_finder.py --watch 10
 python3 scripts/session_finder.py --match "my-custom-agent"
+python3 scripts/session_finder.py --kill 85819
 ```
 
-## Detection
+Resolve `scripts/` against this skill's directory. Default to one `--json`
+snapshot and quote numbers from it. Exit 0 means at least one agent was found,
+1 means none, 2 means a refused `--kill` or bad arguments. `--watch N` is a foreground refresh loop for
+a person's terminal; from OmO, take a fresh snapshot when needed instead, or run
+the watch under `tool.monitor` with a `filter` for the line you care about.
 
-Process-level via `ps`: matches command lines against known agent patterns
-(claude, codex, omo/senpi, gajae-code, hermes, opencode, aider, cursor,
-gemini). Excludes itself, greps, and the agent-skills test harness. Groups
-by client with per-process PID, parent PID, uptime, and command.
+`--kill` performs a fresh provider match before sending `SIGTERM`; it refuses
+unknown PIDs and never sends `SIGKILL`. Kill only with the user's explicit say
+for that PID. A watch is read-only. For delegated supervision of many sessions,
+use `watcher`. Historical
+transcripts are intentionally outside this skill's scope.
 
-## Safe kill
+## OmO compatibility
 
-`--kill PID` validates the PID against a fresh detection scan before sending
-SIGTERM — it refuses any process that does not match an agent pattern, so
-you cannot accidentally kill a system process. SIGTERM only (no SIGKILL);
-a hung agent that ignores SIGTERM is your call to handle manually.
+The detector recognizes the `omo` launcher, `omo.js`, `omo-ai`, Senpi,
+`@code-yeongyu/senpi`, and the extension's session-host command paths while
+excluding this helper, grep processes, and test harnesses.
 
-## Pairs with
-
-`session-handoff` (read the logs of sessions you found here),
-`usage-audit` (token accounting for those same clients),
-`session-rules` (corrections from those sessions).
+Routing is split by time: running processes belong here; past sessions and
+transcripts belong to OmO's native `coding-agent-sessions` skill. Earlier
+releases shipped a disabled stub under that name; the installer now moves that
+stub to the skill manager's restorable trash so the native skill is reachable.

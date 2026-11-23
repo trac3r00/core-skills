@@ -1,13 +1,13 @@
 {
-  "name": "agent-skills",
-  "version": "2.9.0",
-  "description": "66 agent skills across eight families: deterministic guards, interop, security, backend/deploy, domains, engineering process, power tools, and creative/frontend workflows, including audited Proxmox VE MCP administration.",
+  "name": "core-skills",
+  "version": "1.0.0",
+  "description": "83 core skills by trac3r00 for any SKILL.md-reading AI client, across eleven families: deterministic guards, interop, security, backend/deploy, engineering process, creative, power tools, agent orchestration (OmO, Herdr), macOS automation, and connectors (Slack, Discord, KakaoTalk, Notion, Obsidian, Vaultwarden).",
   "author": {
     "name": "trac3r00",
     "url": "https://github.com/trac3r00"
   },
-  "homepage": "https://github.com/trac3r00/agent-skills",
-  "repository": "https://github.com/trac3r00/agent-skills",
+  "homepage": "https://github.com/trac3r00/core-skills",
+  "repository": "https://github.com/trac3r00/core-skills",
   "license": "MIT",
   "keywords": [
     "agent-memory",
@@ -32,15 +32,15 @@
   "skills": "./skills/",
   "authentication": "ON_USE",
   "interface": {
-    "displayName": "Agent Guards",
-    "shortDescription": "Exit-code skills: token, hallucination, open-loop, subscription, and gate overlap audits",
-    "longDescription": "Runnable skills for people running real AI agents — and their own budget. context-budget audits an agent's per-turn context window like a cost center and fails CI when the always-loaded context grows. claim-audit separates grounded, hedged, and bare factual claims so you catch the unverified assertions most likely to be hallucinations. open-loops extracts unresolved commitments, deferrals, and open questions from a transcript so cron jobs and triggers don't lose thread context. subscription-audit finds recurring charges hiding in a bank/card CSV, reports the true monthly and yearly cost, and flags forgotten ones. gate-graph computes AST overlap for validator and middleware gates so duplicate checks and dead gates can be cleaned up quickly. skill-decay cross-references a declared skill/tool inventory against real usage logs to surface never-used and stale capabilities that are quietly taxing every prompt. Dependency-light Python, exit-code gates — not prompt wrappers.",
+    "displayName": "Core Skills",
+    "shortDescription": "Guards, process discipline, orchestration, macOS and connector skills for any SKILL.md client",
+    "longDescription": "Skills for people running real AI agents. Guards (context-budget, claim-audit, open-loops, gate-graph, skill-decay, comment-checker, subscription-audit) are stdlib Python CLIs with exit-code gates. Process skills (anti-bs, loe, dft, fdd, preflight, finish-pr, ci-test-rebuild) keep agent work honest and shippable. Orchestration skills drive OmO and Herdr; macOS skills script Apple apps; connectors read Slack, Discord, KakaoTalk, Notion, Obsidian and Vaultwarden.",
     "developerName": "trac3r00",
     "category": "Productivity",
     "capabilities": [
       "Read"
     ],
-    "websiteURL": "https://github.com/trac3r00/agent-skills",
+    "websiteURL": "https://github.com/trac3r00/core-skills",
     "defaultPrompt": [
       "Audit my agent's context budget",
       "Which claims in this answer are unsupported?",

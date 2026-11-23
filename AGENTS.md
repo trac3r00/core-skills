@@ -1,20 +1,20 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-08-26
-**Commit:** 184b217
+**Generated:** 2026-11-23
 **Branch:** main
 
 ## OVERVIEW
-61 agent skills (SKILL.md standard) in five families; 35 are script-backed stdlib-only Python CLIs with exit-code gates, 22 are instruction-only. Installable as a Claude Code / Codex plugin or used from a clone by any SKILL.md-reading agent.
+core-skills: 83 general-purpose skills (Agent Skills SKILL.md standard) in 11 families: backend 18, connectors 6, creative 4, guards 7, interop 4, macos 10, orchestration 11, other 6, power 4, process 11, security 2. 44 ship Python CLIs (catalogue `script_backed`), 8 are Node-backed (`scripts/*.mjs` + `test/*.test.mjs`), and most of the remaining 31 are instruction-only. Every skill is authored by trac3r00 under MIT; comment-checker's detection rules are adapted from oh-my-opencode / oh-my-claudecode. The macos family is macOS-only; the orchestration family is OmO/Herdr-specific. `catalogue.json` (generated) is the inventory source of truth. Installable as a Claude Code / Codex plugin or used from a clone by any SKILL.md-reading agent.
 
 ## STRUCTURE
 ```
-agent-skills/
+core-skills/
+├── catalogue.json    # generated inventory (skill-picker/scripts/generate_catalogue.py); never hand-edit
 ├── .claude-plugin/   # marketplace.json (catalog) + plugin.json (metadata), version-locked together
 ├── .codex-plugin/    # Codex manifest; skills path ./skills/, no version field
 ├── .agents/plugins/  # generic marketplace manifest
-├── skills/<name>/    # SKILL.md [+ scripts/*.py] [+ references/] [+ LICENSE.txt]
-└── tests/test_skills.py  # single test module for ALL skill CLIs + repo-wide frontmatter validation
+├── skills/<name>/    # SKILL.md [+ scripts/*.py | scripts/*.mjs] [+ test/*.test.mjs] [+ references/]
+└── tests/test_skills.py  # pytest module for the Python skill CLIs + repo-wide frontmatter validation
 ```
 
 ## WHERE TO LOOK
@@ -23,8 +23,8 @@ agent-skills/
 | Add a skill | `skills/<name>/SKILL.md` | frontmatter contract in skills/AGENTS.md; validated by tests |
 | Add CLI tests | `tests/test_skills.py` | script const near `CB`..`SH`, use `run()` helper |
 | Bump release | `.claude-plugin/*.json`, `.codex-plugin/plugin.json` | keep versions + descriptions in sync across all three |
-| Skill families / inventory | `README.md` tables | update when adding a skill; counts are asserted nowhere — keep honest |
-| CI | `.github/workflows/tests.yml` | pytest matrix 3.9/3.11/3.12 + 2 smoke tests |
+| Skill families / inventory | `catalogue.json`, `README.md` family tables | regenerate the catalogue, then match README tables and counts to it |
+| CI | `.github/workflows/tests.yml` | pytest matrix 3.10/3.12/3.13 + 2 smoke tests |
 
 ## CODE MAP
 | Symbol | Type | Location | Role |
@@ -36,11 +36,9 @@ agent-skills/
 | `PROVIDER_ROOTS` | const | skills/skill-sync/scripts/skill_sync.py | priority-ordered skill dirs per provider |
 
 ## CONVENTIONS
-- CLI contract (all 35 script-backed skills): argparse, positional input or `-` stdin, `--json`, gates are strict `>` comparisons; rc 0 ok / 1 gate breach / 2 usage-or-input error.
-- Stdlib-only; sole exception: `context-budget` optionally uses `tiktoken` (chars/4 fallback).
-- Frontmatter: `name` (== dirname), `description`, `version`, `license` (with upstream attribution), `metadata.agentskills.tags`.
-- Ported skills keep upstream LICENSE.txt in-dir and a `license:` frontmatter line naming the source repo.
-- De-brand ported content: harness-specific tools named only as examples with plain-text fallbacks.
+- CLI contract (the Python guard, security, interop, and backend CLIs): argparse, positional input or `-` stdin, `--json`, gates are strict `>` comparisons; rc 0 ok / 1 gate breach / 2 usage-or-input error.
+- Guard, security, interop, and backend CLIs are stdlib-only; sole exception: `context-budget` optionally uses `tiktoken` (chars/4 fallback).
+- Frontmatter: `name` (== dirname), `description`, `version`, `license` (MIT), `metadata.agentskills.tags`.
 
 ## ANTI-PATTERNS (THIS PROJECT)
 - No network/credentials/LLM calls inside guard CLIs — offline and deterministic, always.
@@ -50,11 +48,12 @@ agent-skills/
 
 ## COMMANDS
 ```bash
-uvx pytest tests/ -q                 # full suite (112 tests)
+uvx pytest tests/ -q                 # Python suite
+node --test skills/*/test/*.test.mjs # Node-backed skill tests
+python3 skills/skill-picker/scripts/generate_catalogue.py --check  # catalogue in sync
 python3 skills/<s>/scripts/<s>.py --help
 ```
 
 ## NOTES
-- `skills/ultimate-browsing/engine/AGENTS.md` documents the vendored fetch engine — leave it upstream-shaped.
 - macOS: session-handoff normalizes `/tmp` -> `/private/tmp`; cwd matching is target-or-child, never parent.
-- CI tests Python 3.9 while README floor is 3.9 too — keep them aligned when bumping.
+- CI tests Python 3.10 while README floor is 3.10 too — keep them aligned when bumping.
